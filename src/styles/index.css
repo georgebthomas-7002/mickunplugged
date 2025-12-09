@@ -199,6 +199,7 @@ a:hover {
 .btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
   box-shadow: var(--shadow-glow);
+  color: var(--color-black);
 }
 
 .btn-secondary {
