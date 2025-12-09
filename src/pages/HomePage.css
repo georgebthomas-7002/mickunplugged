@@ -232,58 +232,51 @@
 }
 
 .family-card {
-  background: var(--color-dark-gray);
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
+  border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
-  border-left: 4px solid;
+  position: relative;
   transition: all var(--transition-base);
 }
 
+.family-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
 .family-card:hover {
-  transform: translateX(8px);
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-4px);
 }
 
 .family-card h3 {
   font-size: 1.5rem;
   margin-bottom: var(--spacing-xs);
+  color: var(--color-gold);
 }
 
 .family-tagline {
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: var(--spacing-sm);
+  color: var(--color-gray-200);
+  letter-spacing: 0.02em;
 }
 
 .family-card > p:last-child {
-  color: var(--color-gray-300);
+  color: var(--color-gray-400);
+  font-family: var(--font-accent);
   font-style: italic;
   margin-bottom: 0;
 }
-
-/* Family Colors */
-.family-regulators {
-  border-color: #4A90A4;
-}
-.family-regulators h3 { color: #4A90A4; }
-.family-regulators .family-tagline { color: #6BB0C4; }
-
-.family-connectors {
-  border-color: #7B68EE;
-}
-.family-connectors h3 { color: #7B68EE; }
-.family-connectors .family-tagline { color: #9D8FFF; }
-
-.family-drivers {
-  border-color: #DC143C;
-}
-.family-drivers h3 { color: #DC143C; }
-.family-drivers .family-tagline { color: #FF4D6A; }
-
-.family-strategists {
-  border-color: var(--color-gold);
-}
-.family-strategists h3 { color: var(--color-gold); }
-.family-strategists .family-tagline { color: var(--color-gold-light); }
 
 /* Results Preview Section */
 .results-preview-section {

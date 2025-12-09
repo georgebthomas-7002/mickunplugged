@@ -34,8 +34,7 @@ function HomePage() {
       <section className="quote-section">
         <div className="container-narrow">
           <blockquote className="quote">
-            "No leader rises to the moment. You rise to your level of emotional
-            preparation."
+            "No leader rises to the moment. You rise to your level of emotional preparation."
             <span className="quote-author">The E.Q.U.I.P. 360 Leadership Mandate</span>
           </blockquote>
         </div>
@@ -112,33 +111,27 @@ function HomePage() {
           </p>
 
           <div className="families-grid">
-            <div className="family-card family-regulators">
+            <div className="family-card">
               <h3>Regulators</h3>
-              <p className="family-tagline">
-                Composure, Steadiness, Emotional Grounding
-              </p>
+              <p className="family-tagline">Composure, Steadiness, Emotional Grounding</p>
               <p>They stabilize teams.</p>
             </div>
 
-            <div className="family-card family-connectors">
+            <div className="family-card">
               <h3>Connectors</h3>
-              <p className="family-tagline">
-                Empathy, Trust, Human Intelligence
-              </p>
+              <p className="family-tagline">Empathy, Trust, Human Intelligence</p>
               <p>They humanize leadership.</p>
             </div>
 
-            <div className="family-card family-drivers">
+            <div className="family-card">
               <h3>Drivers</h3>
               <p className="family-tagline">Action, Standards, Momentum</p>
               <p>They create results and standards.</p>
             </div>
 
-            <div className="family-card family-strategists">
+            <div className="family-card">
               <h3>Strategists</h3>
-              <p className="family-tagline">
-                Awareness, Vision, Intentionality
-              </p>
+              <p className="family-tagline">Awareness, Vision, Intentionality</p>
               <p>They shape direction and intelligence.</p>
             </div>
           </div>
