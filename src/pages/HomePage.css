@@ -111,11 +111,11 @@
 .quote-section .quote {
   text-align: center;
   font-size: 1.75rem;
-  max-width: 700px;
   margin: 0 auto;
   border-left: none;
   background: transparent;
   padding: 0;
+  white-space: nowrap;
 }
 
 .quote-section .quote-author {
@@ -377,6 +377,7 @@
 
   .quote-section .quote {
     font-size: 1.25rem;
+    white-space: normal;
   }
 
   .section-title {
