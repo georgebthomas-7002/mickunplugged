@@ -216,7 +216,7 @@
 }
 
 .choice-text {
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--color-gray-100);
   padding-top: 0.125rem;
