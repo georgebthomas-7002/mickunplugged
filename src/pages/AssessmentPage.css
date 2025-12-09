@@ -266,7 +266,7 @@
 
 .coach-text {
   font-family: var(--font-accent);
-  font-style: italic;
+  font-weight: 300;
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--color-gold-light);

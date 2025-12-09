@@ -49,7 +49,7 @@
 
 .footer-tagline {
   font-family: var(--font-accent);
-  font-style: italic;
+  font-weight: 300;
   font-size: 0.875rem;
   color: var(--color-gray-400);
 }

@@ -106,7 +106,7 @@
 
 .family-tagline {
   font-family: var(--font-accent);
-  font-style: italic;
+  font-weight: 300;
   font-size: 1.125rem;
   color: var(--color-gray-200);
   margin: 0;
@@ -556,7 +556,7 @@
 .results-quote {
   font-family: var(--font-accent);
   font-size: 1.5rem;
-  font-style: italic;
+  font-weight: 300;
   color: var(--color-gold-light);
   text-align: center;
   border: none;
