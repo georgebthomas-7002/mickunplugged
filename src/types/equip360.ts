@@ -218,14 +218,14 @@ export const LEADERSHIP_FAMILIES: Record<LeadershipFamilyCode, LeadershipFamily>
     name: 'Regulators',
     tagline: 'Composure, Steadiness, Emotional Grounding',
     description: 'They stabilize teams.',
-    color: '#4A90A4', // Steel blue
+    color: '#0791f1', // Blue
   },
   CONNECTORS: {
     code: 'CONNECTORS',
     name: 'Connectors',
     tagline: 'Empathy, Trust, Human Intelligence',
     description: 'They humanize leadership.',
-    color: '#7B68EE', // Medium slate blue
+    color: '#0791f1', // Blue
   },
   DRIVERS: {
     code: 'DRIVERS',

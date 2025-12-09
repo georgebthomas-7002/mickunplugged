@@ -60,6 +60,14 @@ function AssessmentPage() {
     const choice = currentScenario.choices.find((c) => c.id === choiceId);
     if (choice) {
       answerScenario(currentScenario.id, choiceId, choice.scores);
+      // Auto-advance after a brief delay to show selection
+      setTimeout(() => {
+        if (isLastScenario) {
+          handleComplete();
+        } else {
+          nextScenario();
+        }
+      }, 400);
     }
   };
 

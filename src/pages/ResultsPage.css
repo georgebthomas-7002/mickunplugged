@@ -329,11 +329,11 @@
 }
 
 .category-fill.eq {
-  background: linear-gradient(90deg, #4A90A4, #6BB0C4);
+  background: linear-gradient(90deg, #0791f1, #3da8f5);
 }
 
 .category-fill.bed {
-  background: linear-gradient(90deg, #7B68EE, #9D8FFF);
+  background: linear-gradient(90deg, #0791f1, #3da8f5);
 }
 
 .category-fill.culture {
