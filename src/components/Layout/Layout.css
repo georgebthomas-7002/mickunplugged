@@ -63,3 +63,26 @@
   font-size: 0.75rem;
   margin: 0;
 }
+
+/* Mobile Edge-to-Edge */
+@media (max-width: 768px) {
+  .main-content {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+
+  .footer {
+    padding: var(--spacing-xl) var(--spacing-sm);
+  }
+
+  .footer-logo {
+    font-size: 1.125rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.8125rem;
+  }
+
+  .footer-copyright {
+    font-size: 0.6875rem;
+  }
+}
