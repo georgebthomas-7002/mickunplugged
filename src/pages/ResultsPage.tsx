@@ -69,15 +69,15 @@ function ResultsPage() {
       <section className="welcome-section">
         <div className="container-narrow">
           <div className="welcome-card">
-            <p className="welcome-lead">Leadership is emotional — because people are emotional.</p>
+            <p className="welcome-lead">Leadership is emotional, because people are emotional.</p>
             <p className="welcome-text">
               Every conversation, decision, and moment of pressure reveals something about how you lead.
               The E.Q.U.I.P. 360 Assessment measures how you:
             </p>
             <ul className="welcome-list">
-              <li><strong>Lead yourself</strong> — Emotional Readiness</li>
-              <li><strong>Behave under pressure</strong> — Behavioral Reality</li>
-              <li><strong>Impact others</strong> — Cultural Influence</li>
+              <li><strong>Lead yourself:</strong> Emotional Readiness</li>
+              <li><strong>Behave under pressure:</strong> Behavioral Reality</li>
+              <li><strong>Impact others:</strong> Cultural Influence</li>
             </ul>
             <p className="welcome-note">
               This is not a personality test. This is your leadership behavior in motion.
@@ -120,7 +120,7 @@ function ResultsPage() {
             <h2 className="section-heading">Your Leadership Identity</h2>
             <p className="context-text">
               Your Leadership Identity is the most accurate snapshot of how you show up under emotional pressure.
-              It reflects the combination of your EQ patterns, B.E.D. tendencies, and cultural impact —
+              It reflects the combination of your EQ patterns, B.E.D. tendencies, and cultural impact,
               forming a leadership type people experience every day.
             </p>
           </div>
@@ -258,7 +258,7 @@ function ResultsPage() {
             <h2 className="section-heading">EQ Pillars</h2>
             <p className="context-text">
               The EQ Pillars represent the core emotional skills that shape your leadership.
-              These scores reveal where your emotional strengths help you — and where pressure may challenge you.
+              These scores reveal where your emotional strengths help you, and where pressure may challenge you.
             </p>
           </div>
 
@@ -343,7 +343,7 @@ function ResultsPage() {
           <div className="section-context">
             <h2 className="section-heading">Culture Impact Index</h2>
             <p className="context-text">
-              Your culture impact reflects the emotional footprint you leave behind —
+              Your culture impact reflects the emotional footprint you leave behind:
               the way people feel after interacting with you.
             </p>
           </div>
@@ -377,7 +377,7 @@ function ResultsPage() {
           <div className="section-context">
             <h2 className="section-heading">Your Culture Ripple</h2>
             <p className="context-text">
-              Your Culture Ripple is the effect your emotional presence has on the environment around you —
+              Your Culture Ripple is the effect your emotional presence has on the environment around you,
               positively or negatively. This explains how your leadership style shapes morale, clarity, trust,
               and emotional tone.
             </p>
@@ -439,7 +439,7 @@ function ResultsPage() {
             <h2 className="section-heading">Your Because Statement</h2>
             <p className="context-text">
               Your "Because" is the emotional engine behind your leadership.
-              It explains why you show up the way you do — and why you refuse to quit.
+              It explains why you show up the way you do, and why you refuse to quit.
             </p>
           </div>
           <div className="because-card">
