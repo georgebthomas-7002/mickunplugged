@@ -116,8 +116,8 @@
 }
 
 .form-card {
-  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
-  border: 1px solid var(--color-gray-700);
+  background: linear-gradient(180deg, var(--color-black) 0%, var(--color-navy) 100%);
+  border: 1px solid var(--color-blue-dark);
   border-radius: var(--radius-lg);
   padding: var(--spacing-2xl);
   box-shadow: var(--shadow-lg);
