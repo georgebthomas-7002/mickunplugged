@@ -8,7 +8,14 @@ import {
   BED_FACTORS,
   CULTURE_DIMENSIONS,
 } from '@/types';
-import { getMetricPercentage, getScoreLevel } from '@/utils';
+import {
+  getMetricPercentage,
+  getScoreLevel,
+  getCultureRippleInsight,
+  getBEDProfileInsight,
+  getPressurePatternInsight,
+  getGrowthRecommendations,
+} from '@/utils';
 import './ResultsPage.css';
 
 function ResultsPage() {
@@ -35,6 +42,12 @@ function ResultsPage() {
   const leadershipFamily = LEADERSHIP_FAMILIES[result.leadershipFamily];
   const leadershipType = LEADERSHIP_TYPES[result.leadershipType];
   const { scores } = result;
+
+  // Generate insights
+  const cultureRippleInsight = getCultureRippleInsight(scores, result.leadershipFamily);
+  const bedProfileInsight = getBEDProfileInsight(scores, result.leadershipType);
+  const pressurePatternInsight = getPressurePatternInsight(scores, result.leadershipType);
+  const growthRecommendations = getGrowthRecommendations(scores, result.leadershipType, result.leadershipFamily);
 
   return (
     <div className="results-page">
@@ -250,6 +263,78 @@ function ResultsPage() {
         </div>
       </section>
 
+      {/* Culture Ripple */}
+      <section className="insight-section">
+        <div className="container-narrow">
+          <div className="insight-card">
+            <div className="insight-header">
+              <span className="insight-icon">🌊</span>
+              <h3>Your Culture Ripple</h3>
+            </div>
+            <p className="insight-text">{cultureRippleInsight}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* B.E.D. Profile */}
+      <section className="insight-section bed-section">
+        <div className="container-narrow">
+          <div className="insight-card">
+            <div className="insight-header">
+              <span className="insight-icon">🛏️</span>
+              <h3>Your B.E.D. Profile</h3>
+            </div>
+            <div className="bed-insights">
+              <div className="bed-item">
+                <h4>Beliefs</h4>
+                <p>{bedProfileInsight.beliefs}</p>
+              </div>
+              <div className="bed-item">
+                <h4>Excuses</h4>
+                <p>{bedProfileInsight.excuses}</p>
+              </div>
+              <div className="bed-item">
+                <h4>Decisions</h4>
+                <p>{bedProfileInsight.decisions}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pressure Pattern */}
+      <section className="insight-section">
+        <div className="container-narrow">
+          <div className="insight-card">
+            <div className="insight-header">
+              <span className="insight-icon">⚡</span>
+              <h3>Your Pressure Pattern</h3>
+            </div>
+            <p className="insight-text">{pressurePatternInsight}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Your Move */}
+      <section className="insight-section move-section">
+        <div className="container-narrow">
+          <div className="insight-card gold-border">
+            <div className="insight-header">
+              <span className="insight-icon">🎯</span>
+              <h3>Your Move</h3>
+            </div>
+            <p className="move-intro">
+              Based on your assessment results, here are your personalized growth recommendations:
+            </p>
+            <ul className="move-list">
+              {growthRecommendations.map((rec, i) => (
+                <li key={i}>{rec}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* Quote */}
       <section className="quote-section">
         <div className="container-narrow">
@@ -264,11 +349,11 @@ function ResultsPage() {
       <section className="actions-section">
         <div className="container-narrow">
           <div className="actions-card">
-            <h3>What's Next?</h3>
+            <h3>Continue Your Leadership Journey</h3>
             <p>
               Your E.Q.U.I.P. 360 results reveal your leadership patterns under
               pressure. Use these insights to lead with greater emotional
-              intelligence.
+              intelligence and make your next move.
             </p>
             <div className="actions-buttons">
               <Link to="/" className="btn btn-primary">

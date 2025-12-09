@@ -422,6 +422,116 @@
   transition: width 1s ease;
 }
 
+/* Insight Sections */
+.insight-section {
+  padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+.insight-section:nth-child(even) {
+  background: var(--color-charcoal);
+}
+
+.insight-card {
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
+  border: 1px solid var(--color-gray-700);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+}
+
+.insight-card.gold-border {
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.insight-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-gray-700);
+}
+
+.insight-icon {
+  font-size: 1.5rem;
+}
+
+.insight-header h3 {
+  font-size: 1.25rem;
+  color: var(--color-gold);
+  margin: 0;
+}
+
+.insight-text {
+  color: var(--color-gray-200);
+  line-height: 1.8;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* B.E.D. Profile */
+.bed-insights {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.bed-item h4 {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.bed-item p {
+  color: var(--color-gray-200);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Your Move */
+.move-intro {
+  color: var(--color-gray-300);
+  margin-bottom: var(--spacing-lg);
+}
+
+.move-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.move-list li {
+  position: relative;
+  padding-left: var(--spacing-xl);
+  color: var(--color-gray-200);
+  line-height: 1.7;
+}
+
+.move-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .insight-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .insight-card {
+    padding: var(--spacing-lg);
+  }
+}
+
 /* Quote Section */
 .results-page .quote-section {
   padding: var(--spacing-3xl) var(--spacing-lg);
