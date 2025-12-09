@@ -60,7 +60,10 @@ function ResultsPage() {
       <header className="results-header">
         <div className="container">
           <span className="results-badge">Assessment Complete</span>
-          <h1>Your E.Q.U.I.P. 360 Leadership Intelligence Report</h1>
+          <h1>
+            <span className="title-line-1">Your E.Q.U.I.P. 360</span>
+            <span className="title-line-2">Leadership Intelligence Report</span>
+          </h1>
           {user && <p className="results-for">Results for {user.name}</p>}
         </div>
       </header>
@@ -175,7 +178,8 @@ function ResultsPage() {
           <div className="section-context centered">
             <h2 className="section-heading">Your Score Breakdown</h2>
             <p className="context-text">
-              These three scores summarize how you perform across the emotional demands of leadership.
+              <span className="context-line">These three scores summarize how you perform across the</span>
+              <span className="context-line">emotional demands of leadership.</span>
             </p>
           </div>
 

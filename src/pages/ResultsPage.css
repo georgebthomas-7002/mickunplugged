@@ -21,9 +21,6 @@
    ============================================ */
 .section-context {
   margin-bottom: var(--spacing-2xl);
-}
-
-.section-context.centered {
   text-align: center;
 }
 
@@ -40,11 +37,12 @@
   font-size: 1.0625rem;
   line-height: 1.8;
   max-width: 700px;
-}
-
-.section-context.centered .context-text {
   margin-left: auto;
   margin-right: auto;
+}
+
+.context-line {
+  display: block;
 }
 
 /* ============================================
@@ -133,6 +131,25 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.title-line-1,
+.title-line-2 {
+  display: block;
+  text-align: center;
+}
+
+.title-line-1 {
+  font-size: 2.5rem;
+}
+
+.title-line-2 {
+  font-size: 2rem;
+  opacity: 0.9;
 }
 
 .results-for {
@@ -1492,6 +1509,14 @@
 
   .results-header h1 {
     font-size: 2rem;
+  }
+
+  .title-line-1 {
+    font-size: 1.5rem;
+  }
+
+  .title-line-2 {
+    font-size: 1.25rem;
   }
 
   .section-heading {
