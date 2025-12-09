@@ -106,7 +106,7 @@
 .assessment-layout {
   display: flex;
   gap: var(--spacing-lg);
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 40px var(--spacing-lg);
 }
 
 /* Scenario Container */
