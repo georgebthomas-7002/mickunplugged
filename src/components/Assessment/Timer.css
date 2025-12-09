@@ -1,0 +1,44 @@
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.timer.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.timer.time-up {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.timer-icon {
+  font-size: 1rem;
+}
+
+.timer-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1.125rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+.timer-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.timer-toggle:hover {
+  opacity: 1;
+}

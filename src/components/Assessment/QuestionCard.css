@@ -1,0 +1,126 @@
+.question-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.question-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.required-badge {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  background-color: var(--color-error);
+  color: white;
+  border-radius: var(--radius-full);
+}
+
+.question-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-gray-800);
+  margin-bottom: 1.5rem;
+}
+
+.question-content {
+  margin-top: 1rem;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: var(--color-gray-50);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option-item:hover {
+  border-color: var(--color-primary-light);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.option-item input {
+  width: auto;
+  cursor: pointer;
+}
+
+.option-item input:checked + .option-text {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.option-item:has(input:checked) {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.option-text {
+  flex: 1;
+  color: var(--color-gray-700);
+}
+
+.text-answer {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.boolean-options {
+  flex-direction: row;
+}
+
+.boolean-options .option-item {
+  flex: 1;
+  justify-content: center;
+}
+
+.rating-options {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.rating-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--color-gray-300);
+  background: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rating-btn:hover {
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.rating-btn.selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}

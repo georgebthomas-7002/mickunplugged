@@ -1,0 +1,30 @@
+.assessment-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.assessment-header {
+  margin-bottom: 2rem;
+}
+
+.assessment-header h1 {
+  margin-bottom: 1rem;
+  color: var(--color-gray-800);
+}
+
+.assessment-content {
+  margin-bottom: 2rem;
+}
+
+.assessment-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.question-counter {
+  color: var(--color-gray-600);
+  font-size: 0.875rem;
+}

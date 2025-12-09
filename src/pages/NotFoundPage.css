@@ -1,0 +1,22 @@
+.not-found-page {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.not-found-page h1 {
+  font-size: 6rem;
+  color: var(--color-primary);
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.not-found-page h2 {
+  font-size: 1.5rem;
+  color: var(--color-gray-800);
+  margin-bottom: 1rem;
+}
+
+.not-found-page p {
+  color: var(--color-gray-600);
+  margin-bottom: 2rem;
+}
