@@ -15,7 +15,8 @@
   background: radial-gradient(
     ellipse at center top,
     var(--color-charcoal) 0%,
-    var(--color-black) 70%
+    var(--color-navy) 50%,
+    var(--color-black) 100%
   );
   position: relative;
   overflow: hidden;
@@ -28,11 +29,22 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(
-    circle at 50% 0%,
-    var(--color-gold-glow) 0%,
-    transparent 50%
-  );
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      var(--color-gold-glow) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(0, 163, 224, 0.08) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 20% 70%,
+      rgba(0, 163, 224, 0.06) 0%,
+      transparent 35%
+    );
   pointer-events: none;
 }
 
@@ -155,7 +167,7 @@
 }
 
 .layer-card {
-  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
   border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
@@ -164,9 +176,15 @@
 }
 
 .layer-card:hover {
+  border-color: var(--color-blue);
+  box-shadow: var(--shadow-blue);
+  transform: translateY(-4px);
+}
+
+/* Alternate card accent - first card gets gold hover */
+.layer-card:first-child:hover {
   border-color: var(--color-gold);
   box-shadow: var(--shadow-gold);
-  transform: translateY(-4px);
 }
 
 .layer-number {
@@ -224,13 +242,30 @@
 /* Leadership Families Section */
 .families-section {
   padding: var(--spacing-4xl) var(--spacing-lg);
-  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-black) 100%);
+  background: linear-gradient(180deg, var(--color-navy) 0%, var(--color-black) 100%);
+  position: relative;
+}
+
+.families-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 10% 50%,
+    rgba(0, 163, 224, 0.05) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
 }
 
 .families-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-xl);
+  position: relative;
 }
 
 @media (max-width: 768px) {
@@ -240,7 +275,7 @@
 }
 
 .family-card {
-  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
   border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
@@ -255,7 +290,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+  background: linear-gradient(90deg, var(--color-blue-dark), var(--color-gold), var(--color-gold-light));
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -290,12 +325,29 @@
 .results-preview-section {
   padding: var(--spacing-4xl) var(--spacing-lg);
   background: var(--color-black);
+  position: relative;
+}
+
+.results-preview-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 90% 20%,
+    rgba(0, 163, 224, 0.04) 0%,
+    transparent 40%
+  );
+  pointer-events: none;
 }
 
 .results-list {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  position: relative;
 }
 
 .result-item {
@@ -303,14 +355,15 @@
   align-items: flex-start;
   gap: var(--spacing-lg);
   padding: var(--spacing-lg);
-  background: var(--color-charcoal);
+  background: linear-gradient(135deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-gray-700);
   transition: all var(--transition-base);
 }
 
 .result-item:hover {
-  border-color: var(--color-gold-muted);
+  border-color: var(--color-blue);
+  box-shadow: 0 2px 12px rgba(0, 163, 224, 0.15);
 }
 
 .result-icon {
@@ -337,18 +390,41 @@
   padding: var(--spacing-4xl) var(--spacing-lg);
   background: radial-gradient(
     ellipse at center,
-    var(--color-charcoal) 0%,
+    var(--color-navy) 0%,
     var(--color-black) 70%
   );
+  position: relative;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(
+      circle at 30% 70%,
+      rgba(0, 163, 224, 0.06) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 70% 30%,
+      rgba(255, 198, 39, 0.08) 0%,
+      transparent 40%
+    );
+  pointer-events: none;
 }
 
 .cta-card {
   text-align: center;
   padding: var(--spacing-3xl);
-  background: linear-gradient(180deg, var(--color-dark-gray) 0%, var(--color-charcoal) 100%);
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
   border: 1px solid var(--color-gold-muted);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-gold);
+  position: relative;
 }
 
 .cta-card h2 {

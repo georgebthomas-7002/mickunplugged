@@ -2,7 +2,7 @@
 
 .results-page {
   min-height: 100vh;
-  background: var(--color-black);
+  background: linear-gradient(180deg, var(--color-black) 0%, var(--color-navy) 30%, var(--color-black) 60%);
 }
 
 .results-loading {
@@ -32,8 +32,23 @@
 .results-header {
   text-align: center;
   padding: var(--spacing-3xl) var(--spacing-lg);
-  background: radial-gradient(ellipse at center top, var(--color-charcoal) 0%, var(--color-black) 70%);
+  background: radial-gradient(ellipse at center top, var(--color-charcoal) 0%, var(--color-navy) 50%, var(--color-black) 100%);
   position: relative;
+}
+
+.results-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 70% 30%,
+    rgba(0, 163, 224, 0.06) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
 }
 
 .results-header::after {
@@ -43,7 +58,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-blue), var(--color-gold), var(--color-blue), transparent);
 }
 
 .results-badge {

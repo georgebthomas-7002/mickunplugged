@@ -4,8 +4,24 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-black);
+  background: linear-gradient(180deg, var(--color-black) 0%, var(--color-navy) 50%, var(--color-black) 100%);
   padding: 0;
+  position: relative;
+}
+
+.assessment-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 80% 20%,
+    rgba(0, 163, 224, 0.04) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
 }
 
 /* Loading State */
@@ -126,11 +142,12 @@
 .scenario-card {
   max-width: 800px;
   width: 100%;
-  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
   border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-lg);
+  position: relative;
 }
 
 .scenario-title {
