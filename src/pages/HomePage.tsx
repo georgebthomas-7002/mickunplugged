@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useAssessment } from '@/context';
 import './HomePage.css';
 
 function HomePage() {
+  const { hasSavedProgress, getProgress } = useAssessment();
+  const hasProgress = hasSavedProgress();
+  const progress = getProgress();
+
   return (
     <div className="home-page">
       {/* Hero Section */}
@@ -23,9 +28,20 @@ function HomePage() {
             behaviors that define leadership when pressure, emotion, and
             expectation collide.
           </p>
-          <Link to="/start" className="btn btn-primary btn-large">
-            Begin Your Assessment
-          </Link>
+          {hasProgress ? (
+            <div className="hero-buttons">
+              <Link to="/assessment" className="btn btn-primary btn-large">
+                Continue Assessment ({progress}% Complete)
+              </Link>
+              <Link to="/start" className="btn btn-secondary">
+                Start New Assessment
+              </Link>
+            </div>
+          ) : (
+            <Link to="/start" className="btn btn-primary btn-large">
+              Begin Your Assessment
+            </Link>
+          )}
           <p className="hero-time">Takes approximately 15-20 minutes</p>
         </div>
       </section>
@@ -210,9 +226,20 @@ function HomePage() {
             <p className="text-accent">
               "Lead from emotional truth, not emotional convenience."
             </p>
-            <Link to="/start" className="btn btn-primary btn-large">
-              Start the Assessment
-            </Link>
+            {hasProgress ? (
+              <div className="cta-buttons">
+                <Link to="/assessment" className="btn btn-primary btn-large">
+                  Continue Assessment ({progress}% Complete)
+                </Link>
+                <Link to="/start" className="btn btn-secondary">
+                  Start New Assessment
+                </Link>
+              </div>
+            ) : (
+              <Link to="/start" className="btn btn-primary btn-large">
+                Start the Assessment
+              </Link>
+            )}
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import {
   useContext,
   useReducer,
   useCallback,
+  useEffect,
   ReactNode,
   Dispatch,
 } from 'react';
@@ -80,14 +81,55 @@ type AssessmentAction =
   | { type: 'SET_LAST_COACH_PROGRESS'; payload: number };
 
 // ============================================
+// LOCAL STORAGE HELPERS
+// ============================================
+
+const STORAGE_KEY = 'equip360_session';
+
+function saveToLocalStorage(state: AssessmentState) {
+  try {
+    const dataToSave = {
+      user: state.user,
+      session: state.session,
+      currentScenarioIndex: state.currentScenarioIndex,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+  } catch (e) {
+    console.error('Failed to save to localStorage:', e);
+  }
+}
+
+function loadFromLocalStorage(): Partial<AssessmentState> | null {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error('Failed to load from localStorage:', e);
+  }
+  return null;
+}
+
+function clearLocalStorage() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {
+    console.error('Failed to clear localStorage:', e);
+  }
+}
+
+// ============================================
 // INITIAL STATE
 // ============================================
 
+const savedState = loadFromLocalStorage();
+
 const initialState: AssessmentState = {
-  user: null,
-  session: null,
+  user: savedState?.user || null,
+  session: savedState?.session || null,
   scenarios: SCENARIOS,
-  currentScenarioIndex: 0,
+  currentScenarioIndex: savedState?.currentScenarioIndex || 0,
   result: null,
   isLoading: false,
   error: null,
@@ -202,6 +244,7 @@ function assessmentReducer(
 
     case 'COMPLETE_ASSESSMENT':
       if (!state.session) return state;
+      clearLocalStorage();
       return {
         ...state,
         session: {
@@ -218,9 +261,13 @@ function assessmentReducer(
       };
 
     case 'RESET_ASSESSMENT':
+      clearLocalStorage();
       return {
         ...initialState,
-        user: state.user, // Keep user info
+        scenarios: SCENARIOS,
+        user: null,
+        session: null,
+        currentScenarioIndex: 0,
       };
 
     case 'SET_LOADING':
@@ -266,6 +313,7 @@ interface AssessmentContextType {
   getResponseForScenario: (scenarioId: string) => AssessmentResponse | undefined;
   isScenarioAnswered: (scenarioId: string) => boolean;
   canProceed: () => boolean;
+  hasSavedProgress: () => boolean;
 }
 
 const AssessmentContext = createContext<AssessmentContextType | undefined>(
@@ -282,6 +330,13 @@ interface AssessmentProviderProps {
 
 export function AssessmentProvider({ children }: AssessmentProviderProps) {
   const [state, dispatch] = useReducer(assessmentReducer, initialState);
+
+  // Save to localStorage when state changes
+  useEffect(() => {
+    if (state.session && state.session.status === 'in_progress') {
+      saveToLocalStorage(state);
+    }
+  }, [state.user, state.session, state.currentScenarioIndex]);
 
   // Register user
   const registerUser = useCallback(
@@ -403,6 +458,11 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
     return isScenarioAnswered(currentScenario.id);
   }, [getCurrentScenario, isScenarioAnswered]);
 
+  // Check if there's saved progress
+  const hasSavedProgress = useCallback((): boolean => {
+    return !!(state.session && state.session.status === 'in_progress' && state.session.responses.length > 0);
+  }, [state.session]);
+
   const value: AssessmentContextType = {
     state,
     dispatch,
@@ -420,6 +480,7 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
     getResponseForScenario,
     isScenarioAnswered,
     canProceed,
+    hasSavedProgress,
   };
 
   return (

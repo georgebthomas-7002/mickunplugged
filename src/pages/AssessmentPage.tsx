@@ -17,6 +17,7 @@ function AssessmentPage() {
     canProceed,
     completeAssessment,
     calculateResults,
+    resetAssessment,
   } = useAssessment();
 
   const [selectedChoice, setSelectedChoice] = useState<'A' | 'B' | 'C' | 'D' | null>(null);
@@ -87,6 +88,13 @@ function AssessmentPage() {
     }
   };
 
+  const handleStartOver = () => {
+    if (window.confirm('Are you sure you want to start over? All progress will be lost.')) {
+      resetAssessment();
+      navigate('/start');
+    }
+  };
+
   const coachMessage = getCoachMessage(progress);
 
   return (
@@ -95,12 +103,20 @@ function AssessmentPage() {
       <header className="assessment-header">
         <div className="header-top">
           <span className="scenario-badge">Scenario {currentScenario.number} of {totalScenarios}</span>
-          <button
-            className="save-exit-btn"
-            onClick={() => navigate('/')}
-          >
-            Save & Exit
-          </button>
+          <div className="header-actions">
+            <button
+              className="save-exit-btn"
+              onClick={handleStartOver}
+            >
+              Start Over
+            </button>
+            <button
+              className="save-exit-btn"
+              onClick={() => navigate('/')}
+            >
+              Save & Exit
+            </button>
+          </div>
         </div>
         <div className="progress-section">
           <div className="progress-bar-container">

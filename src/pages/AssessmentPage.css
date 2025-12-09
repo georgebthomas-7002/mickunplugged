@@ -58,6 +58,11 @@
   border-radius: var(--radius-sm);
 }
 
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
 .save-exit-btn {
   background: transparent;
   border: 1px solid var(--color-gray-600);

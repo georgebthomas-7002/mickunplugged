@@ -94,6 +94,14 @@
   color: var(--color-gray-400);
 }
 
+.hero-buttons,
+.cta-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 /* Quote Section */
 .quote-section {
   padding: var(--spacing-4xl) var(--spacing-lg);
