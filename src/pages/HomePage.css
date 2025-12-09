@@ -267,12 +267,12 @@
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: var(--spacing-sm);
-  color: var(--color-gray-200);
+  color: var(--color-white);
   letter-spacing: 0.02em;
 }
 
 .family-card > p:last-child {
-  color: var(--color-gray-400);
+  color: var(--color-gray-200);
   font-family: var(--font-accent);
   font-style: italic;
   margin-bottom: 0;

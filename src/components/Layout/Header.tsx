@@ -10,9 +10,6 @@ function Header() {
           <span className="logo-360">360</span>
         </Link>
         <nav className="nav">
-          <Link to="/" className="nav-link">
-            Home
-          </Link>
           <Link to="/start" className="nav-link nav-cta">
             Take Assessment
           </Link>
