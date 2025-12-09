@@ -104,11 +104,9 @@
 
 /* Main Layout */
 .assessment-layout {
-  flex: 1;
   display: flex;
   gap: var(--spacing-lg);
   padding: var(--spacing-md) var(--spacing-lg);
-  overflow: hidden;
 }
 
 /* Scenario Container */
