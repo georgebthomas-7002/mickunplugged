@@ -1,45 +1,53 @@
 /* E.Q.U.I.P. 360 Design System */
-/* Luxury Gold & Black Theme */
+/* Brand Color Palette */
 
 :root {
-  /* Brand Colors - Gold */
-  --color-gold: #C9A227;
-  --color-gold-light: #E8D48A;
-  --color-gold-dark: #A68520;
-  --color-gold-muted: rgba(201, 162, 39, 0.1);
-  --color-gold-glow: rgba(201, 162, 39, 0.3);
+  /* Brand Colors - Gold (Primary) */
+  --color-gold: #FFC627;
+  --color-gold-light: #FFD75E;
+  --color-gold-dark: #D4A300;
+  --color-gold-muted: rgba(255, 198, 39, 0.1);
+  --color-gold-glow: rgba(255, 198, 39, 0.3);
+
+  /* Brand Colors - Blue (Accent) */
+  --color-blue: #00A3E0;
+  --color-blue-light: #33B5E8;
+  --color-blue-dark: #0082B3;
+  --color-blue-muted: rgba(0, 163, 224, 0.1);
 
   /* Brand Colors - Dark */
-  --color-black: #0D0D0D;
+  --color-black: #000000;
+  --color-navy: #0C2340;
   --color-charcoal: #1A1A1A;
-  --color-dark-gray: #2D2D2D;
-  --color-medium-gray: #404040;
-  --color-light-gray: #6B6B6B;
-  --color-off-white: #F5F5F5;
+  --color-dark-gray: #6E6E6E;
+  --color-medium-gray: #9E9E9E;
+  --color-light-gray: #BEBEBE;
+  --color-off-white: #E8E8E8;
   --color-white: #FFFFFF;
 
   /* Semantic Colors */
   --color-success: #4CAF50;
-  --color-warning: #FFC107;
+  --color-warning: var(--color-gold);
   --color-error: #F44336;
-  --color-info: #2196F3;
+  --color-info: var(--color-blue);
 
   /* Primary/Secondary mapping for compatibility */
   --color-primary: var(--color-gold);
   --color-primary-light: var(--color-gold-light);
   --color-primary-dark: var(--color-gold-dark);
+  --color-secondary: var(--color-blue);
 
   /* Gray scale mapping */
   --color-gray-50: #F5F5F5;
   --color-gray-100: #E8E8E8;
-  --color-gray-200: #E0E0E0;
-  --color-gray-300: #B8B8B8;
-  --color-gray-400: #909090;
-  --color-gray-500: #606060;
-  --color-gray-600: #404040;
+  --color-gray-200: #DEDEDE;
+  --color-gray-300: #BEBEBE;
+  --color-gray-400: #9E9E9E;
+  --color-gray-500: #6E6E6E;
+  --color-gray-600: #4A4A4A;
   --color-gray-700: #2D2D2D;
   --color-gray-800: #1A1A1A;
-  --color-gray-900: #0D0D0D;
+  --color-gray-900: #0C2340;
 
   /* Typography */
   --font-display: 'Playfair Display', Georgia, serif;
@@ -67,8 +75,9 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
-  --shadow-gold: 0 4px 20px rgba(201, 162, 39, 0.3);
-  --shadow-glow: 0 0 30px rgba(201, 162, 39, 0.2);
+  --shadow-gold: 0 4px 20px rgba(255, 198, 39, 0.35);
+  --shadow-glow: 0 0 30px rgba(255, 198, 39, 0.25);
+  --shadow-blue: 0 4px 20px rgba(0, 163, 224, 0.3);
 
   /* Transitions */
   --transition-fast: 150ms ease;
