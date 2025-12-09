@@ -1,30 +1,315 @@
+/* E.Q.U.I.P. 360 Assessment Page Styles */
+
 .assessment-page {
-  max-width: 800px;
-  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-black);
+  padding: 0;
 }
 
+/* Loading State */
+.assessment-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  color: var(--color-gray-400);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--color-gray-700);
+  border-top-color: var(--color-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Coach Message */
+.coach-message {
+  position: fixed;
+  top: var(--spacing-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: linear-gradient(135deg, var(--color-gold-muted), rgba(201, 162, 39, 0.2));
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-gold);
+  z-index: 1000;
+  max-width: 90%;
+}
+
+.coach-avatar {
+  font-size: 1.5rem;
+}
+
+.coach-message p {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--color-gold-light);
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Header */
 .assessment-header {
-  margin-bottom: 2rem;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--color-charcoal);
+  border-bottom: 1px solid var(--color-gray-800);
 }
 
-.assessment-header h1 {
-  margin-bottom: 1rem;
-  color: var(--color-gray-800);
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
 }
 
-.assessment-content {
-  margin-bottom: 2rem;
+.scenario-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-gold);
+  padding: 0.375rem 0.75rem;
+  background: var(--color-gold-muted);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-sm);
 }
 
+.save-exit-btn {
+  background: transparent;
+  border: 1px solid var(--color-gray-600);
+  color: var(--color-gray-300);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.save-exit-btn:hover {
+  border-color: var(--color-gray-400);
+  color: var(--color-white);
+}
+
+.progress-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.progress-bar-container {
+  flex: 1;
+  height: 6px;
+  background: var(--color-dark-gray);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-light));
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  font-size: 0.75rem;
+  color: var(--color-gray-400);
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Scenario Container */
+.scenario-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+}
+
+.scenario-card {
+  max-width: 800px;
+  width: 100%;
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-dark-gray) 100%);
+  border: 1px solid var(--color-gray-700);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.scenario-title {
+  font-size: 1.5rem;
+  color: var(--color-gold);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-gray-700);
+}
+
+.scenario-context {
+  margin-bottom: var(--spacing-xl);
+}
+
+.scenario-context p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--color-gray-200);
+  margin: 0;
+}
+
+.scenario-question {
+  margin-bottom: var(--spacing-xl);
+}
+
+.scenario-question h3 {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+/* Choices */
+.choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.choice-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--color-dark-gray);
+  border: 2px solid var(--color-gray-600);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: left;
+  width: 100%;
+}
+
+.choice-btn:hover {
+  border-color: var(--color-gold-light);
+  background: rgba(201, 162, 39, 0.05);
+}
+
+.choice-btn.selected {
+  border-color: var(--color-gold);
+  background: var(--color-gold-muted);
+}
+
+.choice-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-gray-600);
+  color: var(--color-white);
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  transition: all var(--transition-base);
+}
+
+.choice-btn:hover .choice-letter,
+.choice-btn.selected .choice-letter {
+  background: var(--color-gold);
+  color: var(--color-black);
+}
+
+.choice-text {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-gray-200);
+  padding-top: 0.25rem;
+}
+
+.choice-btn.selected .choice-text {
+  color: var(--color-white);
+}
+
+/* Navigation */
 .assessment-navigation {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
-  border-top: 1px solid var(--color-gray-200);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--color-charcoal);
+  border-top: 1px solid var(--color-gray-800);
 }
 
-.question-counter {
-  color: var(--color-gray-600);
-  font-size: 0.875rem;
+.nav-indicators {
+  display: flex;
+  gap: 6px;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-gray-700);
+  transition: all var(--transition-fast);
+}
+
+.nav-dot.answered {
+  background: var(--color-gold);
+}
+
+.nav-dot.current {
+  background: var(--color-white);
+  transform: scale(1.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .assessment-header {
+    padding: var(--spacing-md);
+  }
+
+  .scenario-container {
+    padding: var(--spacing-md);
+  }
+
+  .scenario-card {
+    padding: var(--spacing-lg);
+  }
+
+  .scenario-title {
+    font-size: 1.25rem;
+  }
+
+  .scenario-context p {
+    font-size: 0.9375rem;
+  }
+
+  .assessment-navigation {
+    padding: var(--spacing-md);
+  }
+
+  .nav-indicators {
+    display: none;
+  }
+
+  .coach-message {
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+    transform: none;
+    max-width: none;
+  }
 }

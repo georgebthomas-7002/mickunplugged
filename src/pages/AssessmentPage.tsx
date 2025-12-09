@@ -1,68 +1,198 @@
-import { useParams } from 'react-router-dom';
-import QuestionCard from '@/components/Assessment/QuestionCard';
-import ProgressBar from '@/components/Assessment/ProgressBar';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAssessment } from '@/context';
+import { getCoachMessage } from '@/types';
 import './AssessmentPage.css';
 
 function AssessmentPage() {
-  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const {
+    state,
+    getCurrentScenario,
+    getProgress,
+    getResponseForScenario,
+    answerScenario,
+    nextScenario,
+    previousScenario,
+    canProceed,
+    completeAssessment,
+    calculateResults,
+  } = useAssessment();
 
-  // Placeholder - replace with actual assessment data fetching
-  const assessment = {
-    id: id,
-    title: 'Sample Assessment',
-    questions: [
-      {
-        id: 'q1',
-        type: 'single-choice' as const,
-        text: 'What is the capital of France?',
-        options: [
-          { id: 'o1', text: 'London', value: 'london' },
-          { id: 'o2', text: 'Paris', value: 'paris', isCorrect: true },
-          { id: 'o3', text: 'Berlin', value: 'berlin' },
-          { id: 'o4', text: 'Madrid', value: 'madrid' },
-        ],
-        required: true,
-      },
-    ],
+  const [selectedChoice, setSelectedChoice] = useState<'A' | 'B' | 'C' | 'D' | null>(null);
+  const [showCoachMessage, setShowCoachMessage] = useState(false);
+  const [lastShownProgress, setLastShownProgress] = useState(-1);
+
+  const currentScenario = getCurrentScenario();
+  const progress = getProgress();
+  const totalScenarios = state.scenarios.length;
+  const currentIndex = state.currentScenarioIndex;
+  const isLastScenario = currentIndex === totalScenarios - 1;
+
+  // Check for existing response when scenario changes
+  useEffect(() => {
+    if (currentScenario) {
+      const existingResponse = getResponseForScenario(currentScenario.id);
+      if (existingResponse) {
+        setSelectedChoice(existingResponse.selectedChoice);
+      } else {
+        setSelectedChoice(null);
+      }
+    }
+  }, [currentScenario, getResponseForScenario]);
+
+  // Show coach message at milestones
+  useEffect(() => {
+    const milestones = [0, 25, 50, 75];
+    const currentMilestone = milestones.find(
+      (m) => progress >= m && m > lastShownProgress
+    );
+
+    if (currentMilestone !== undefined && currentMilestone > lastShownProgress) {
+      setShowCoachMessage(true);
+      setLastShownProgress(currentMilestone);
+      const timer = setTimeout(() => setShowCoachMessage(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [progress, lastShownProgress]);
+
+  // Redirect if no session
+  useEffect(() => {
+    if (!state.session) {
+      navigate('/start');
+    }
+  }, [state.session, navigate]);
+
+  if (!currentScenario || !state.session) {
+    return (
+      <div className="assessment-loading">
+        <div className="loading-spinner" />
+        <p>Loading assessment...</p>
+      </div>
+    );
+  }
+
+  const handleChoiceSelect = (choiceId: 'A' | 'B' | 'C' | 'D') => {
+    setSelectedChoice(choiceId);
+    const choice = currentScenario.choices.find((c) => c.id === choiceId);
+    if (choice) {
+      answerScenario(currentScenario.id, choiceId, choice.scores);
+    }
   };
 
-  const currentQuestionIndex = 0;
-  const currentQuestion = assessment.questions[currentQuestionIndex];
+  const handleNext = () => {
+    if (isLastScenario) {
+      handleComplete();
+    } else {
+      nextScenario();
+    }
+  };
+
+  const handleComplete = () => {
+    completeAssessment();
+    const result = calculateResults();
+    if (result) {
+      navigate(`/results/${result.id}`);
+    }
+  };
+
+  const coachMessage = getCoachMessage(progress);
 
   return (
     <div className="assessment-page">
-      <div className="assessment-header">
-        <h1>{assessment.title}</h1>
-        <ProgressBar
-          current={currentQuestionIndex + 1}
-          total={assessment.questions.length}
-        />
-      </div>
+      {/* Coach Message Toast */}
+      {showCoachMessage && coachMessage && (
+        <div className="coach-message animate-slide-up">
+          <div className="coach-avatar">🎯</div>
+          <p>{coachMessage.message}</p>
+        </div>
+      )}
 
-      <div className="assessment-content">
-        <QuestionCard
-          question={currentQuestion}
-          questionNumber={currentQuestionIndex + 1}
-          onAnswer={(value) => console.log('Answer:', value)}
-        />
-      </div>
+      {/* Header */}
+      <header className="assessment-header">
+        <div className="header-top">
+          <span className="scenario-badge">Scenario {currentScenario.number} of {totalScenarios}</span>
+          <button
+            className="save-exit-btn"
+            onClick={() => navigate('/')}
+          >
+            Save & Exit
+          </button>
+        </div>
+        <div className="progress-section">
+          <div className="progress-bar-container">
+            <div
+              className="progress-bar-fill"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <span className="progress-text">{progress}% Complete</span>
+        </div>
+      </header>
 
-      <div className="assessment-navigation">
+      {/* Scenario Content */}
+      <main className="scenario-container">
+        <div className="scenario-card">
+          <h2 className="scenario-title">{currentScenario.title}</h2>
+
+          <div className="scenario-context">
+            <p>{currentScenario.context}</p>
+          </div>
+
+          <div className="scenario-question">
+            <h3>{currentScenario.question}</h3>
+          </div>
+
+          <div className="choices-container">
+            {currentScenario.choices.map((choice) => (
+              <button
+                key={choice.id}
+                className={`choice-btn ${selectedChoice === choice.id ? 'selected' : ''}`}
+                onClick={() => handleChoiceSelect(choice.id)}
+              >
+                <span className="choice-letter">{choice.id}</span>
+                <span className="choice-text">{choice.text}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Navigation */}
+      <footer className="assessment-navigation">
         <button
           className="btn btn-secondary"
-          disabled={currentQuestionIndex === 0}
+          onClick={previousScenario}
+          disabled={currentIndex === 0}
         >
-          Previous
+          ← Previous
         </button>
-        <span className="question-counter">
-          {currentQuestionIndex + 1} of {assessment.questions.length}
-        </span>
-        <button className="btn btn-primary">
-          {currentQuestionIndex === assessment.questions.length - 1
-            ? 'Submit'
-            : 'Next'}
+
+        <div className="nav-indicators">
+          {state.scenarios.map((_, index) => (
+            <span
+              key={index}
+              className={`nav-dot ${
+                index === currentIndex
+                  ? 'current'
+                  : state.session?.responses.some(
+                      (r) => r.scenarioId === state.scenarios[index].id
+                    )
+                  ? 'answered'
+                  : ''
+              }`}
+            />
+          ))}
+        </div>
+
+        <button
+          className="btn btn-primary"
+          onClick={handleNext}
+          disabled={!canProceed()}
+        >
+          {isLastScenario ? 'Complete Assessment' : 'Next →'}
         </button>
-      </div>
+      </footer>
     </div>
   );
 }
