@@ -20,8 +20,6 @@ function AssessmentPage() {
   } = useAssessment();
 
   const [selectedChoice, setSelectedChoice] = useState<'A' | 'B' | 'C' | 'D' | null>(null);
-  const [showCoachMessage, setShowCoachMessage] = useState(false);
-  const [lastShownProgress, setLastShownProgress] = useState(-1);
 
   const currentScenario = getCurrentScenario();
   const progress = getProgress();
@@ -40,21 +38,6 @@ function AssessmentPage() {
       }
     }
   }, [currentScenario, getResponseForScenario]);
-
-  // Show coach message at milestones
-  useEffect(() => {
-    const milestones = [0, 25, 50, 75];
-    const currentMilestone = milestones.find(
-      (m) => progress >= m && m > lastShownProgress
-    );
-
-    if (currentMilestone !== undefined && currentMilestone > lastShownProgress) {
-      setShowCoachMessage(true);
-      setLastShownProgress(currentMilestone);
-      const timer = setTimeout(() => setShowCoachMessage(false), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [progress, lastShownProgress]);
 
   // Redirect if no session
   useEffect(() => {
@@ -100,14 +83,6 @@ function AssessmentPage() {
 
   return (
     <div className="assessment-page">
-      {/* Coach Message Toast */}
-      {showCoachMessage && coachMessage && (
-        <div className="coach-message animate-slide-up">
-          <div className="coach-avatar">🎯</div>
-          <p>{coachMessage.message}</p>
-        </div>
-      )}
-
       {/* Header */}
       <header className="assessment-header">
         <div className="header-top">
@@ -130,33 +105,47 @@ function AssessmentPage() {
         </div>
       </header>
 
-      {/* Scenario Content */}
-      <main className="scenario-container">
-        <div className="scenario-card">
-          <h2 className="scenario-title">{currentScenario.title}</h2>
+      {/* Main Content with Sidebar */}
+      <div className="assessment-layout">
+        {/* Scenario Content */}
+        <main className="scenario-container">
+          <div className="scenario-card">
+            <h2 className="scenario-title">{currentScenario.title}</h2>
 
-          <div className="scenario-context">
-            <p>{currentScenario.context}</p>
-          </div>
+            <div className="scenario-context">
+              <p>{currentScenario.context}</p>
+            </div>
 
-          <div className="scenario-question">
-            <h3>{currentScenario.question}</h3>
-          </div>
+            <div className="scenario-question">
+              <h3>{currentScenario.question}</h3>
+            </div>
 
-          <div className="choices-container">
-            {currentScenario.choices.map((choice) => (
-              <button
-                key={choice.id}
-                className={`choice-btn ${selectedChoice === choice.id ? 'selected' : ''}`}
-                onClick={() => handleChoiceSelect(choice.id)}
-              >
-                <span className="choice-letter">{choice.id}</span>
-                <span className="choice-text">{choice.text}</span>
-              </button>
-            ))}
+            <div className="choices-container">
+              {currentScenario.choices.map((choice) => (
+                <button
+                  key={choice.id}
+                  className={`choice-btn ${selectedChoice === choice.id ? 'selected' : ''}`}
+                  onClick={() => handleChoiceSelect(choice.id)}
+                >
+                  <span className="choice-letter">{choice.id}</span>
+                  <span className="choice-text">{choice.text}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+
+        {/* Coach Sidebar */}
+        <aside className="coach-sidebar">
+          <div className="coach-card">
+            <div className="coach-header">
+              <span className="coach-icon">🎯</span>
+              <span className="coach-label">Coach</span>
+            </div>
+            <p className="coach-text">{coachMessage?.message || "Trust your instincts."}</p>
+          </div>
+        </aside>
+      </div>
 
       {/* Navigation */}
       <footer className="assessment-navigation">
