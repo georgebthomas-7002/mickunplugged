@@ -255,7 +255,7 @@ function ResultsPage() {
         <div className="container-narrow">
           <blockquote className="results-quote">
             "Lead from emotional truth, not emotional convenience."
-            <span className="quote-author">— The E.Q.U.I.P. 360 Leadership Mandate</span>
+            <span className="quote-author">The E.Q.U.I.P. 360 Leadership Mandate</span>
           </blockquote>
         </div>
       </section>

@@ -627,7 +627,7 @@ export interface CoachMessage {
 export const COACH_MESSAGES: CoachMessage[] = [
   {
     trigger: 'start',
-    message: "Let's discover the leader you already are — and the one you're becoming.",
+    message: "Let's discover the leader you already are, and the one you're becoming.",
   },
   {
     trigger: '25%',

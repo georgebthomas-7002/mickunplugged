@@ -21,7 +21,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: 'Interrupt immediately to correct the error — accuracy is more important than feelings in front of executives.',
+        text: 'Interrupt immediately to correct the error. Accuracy is more important than feelings in front of executives.',
         scores: [1, 1, 3, 0, 1, 1, 3, 2, 0, 0, 1, 1, 0],
       },
       {
@@ -111,7 +111,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: "Begin the formal performance plan process — you've already tried the soft approach twice.",
+        text: "Begin the formal performance plan process. You've already tried the soft approach twice.",
         scores: [2, 3, 3, 1, 2, 2, 2, 3, 2, 1, 3, 2, 2],
       },
       {
@@ -121,7 +121,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'D',
-        text: "Wait another month to see if things improve — they've earned patience through past performance.",
+        text: "Wait another month to see if things improve. They've earned patience through past performance.",
         scores: [1, 2, 1, 2, 1, 1, 4, 0, 1, 2, 1, 1, 1],
       },
     ],
@@ -136,7 +136,7 @@ export const SCENARIOS: Scenario[] = [
     choices: [
       {
         id: 'A',
-        text: "Accept it gracefully — the work speaks for itself, and those who matter know who did it.",
+        text: "Accept it gracefully. The work speaks for itself, and those who matter know who did it.",
         scores: [3, 4, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2],
       },
       {
@@ -181,7 +181,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'D',
-        text: "Note the feedback but recognize that leadership sometimes requires being firm — not everyone will find you approachable, and that's okay.",
+        text: "Note the feedback but recognize that leadership sometimes requires being firm. Not everyone will find you approachable, and that's okay.",
         scores: [2, 3, 2, 1, 2, 2, 3, 2, 2, 1, 2, 2, 1],
       },
     ],
@@ -206,7 +206,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'C',
-        text: 'Cancel your plans and help fully — relationships and goodwill matter more than one weekend.',
+        text: 'Cancel your plans and help fully. Relationships and goodwill matter more than one weekend.',
         scores: [2, 1, 4, 4, 3, 2, 2, 2, 4, 3, 2, 3, 2],
       },
       {
@@ -291,7 +291,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: "Be direct that you want them to stay and immediately discuss what it would take — compensation, role, growth opportunities.",
+        text: "Be direct that you want them to stay and immediately discuss what it would take: compensation, role, growth opportunities.",
         scores: [3, 2, 4, 2, 3, 3, 0, 4, 3, 2, 3, 3, 3],
       },
       {
@@ -301,7 +301,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'D',
-        text: 'Begin contingency planning immediately while having the retention conversation — prepare for both outcomes.',
+        text: 'Begin contingency planning immediately while having the retention conversation. Prepare for both outcomes.',
         scores: [4, 4, 3, 2, 3, 4, 0, 4, 3, 2, 3, 3, 3],
       },
     ],
@@ -326,7 +326,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'C',
-        text: 'Focus quickly on the path forward rather than dwelling on what went wrong — action orientation is what leadership wants.',
+        text: 'Focus quickly on the path forward rather than dwelling on what went wrong. Action orientation is what leadership wants.',
         scores: [2, 2, 4, 1, 2, 2, 2, 3, 2, 1, 2, 2, 2],
       },
       {
@@ -351,7 +351,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: 'Accept the invitation — executive exposure and trust-building opportunities are valuable for your career.',
+        text: 'Accept the invitation. Executive exposure and trust-building opportunities are valuable for your career.',
         scores: [2, 2, 3, 1, 3, 2, 2, 2, 3, 1, 2, 1, 2],
       },
       {
@@ -376,12 +376,12 @@ export const SCENARIOS: Scenario[] = [
     choices: [
       {
         id: 'A',
-        text: 'Propose a bounded experiment — small scale, clear success criteria, defined timeline — that manages risk while allowing innovation.',
+        text: 'Propose a bounded experiment (small scale, clear success criteria, defined timeline) that manages risk while allowing innovation.',
         scores: [4, 4, 3, 2, 3, 4, 0, 4, 3, 3, 4, 3, 3],
       },
       {
         id: 'B',
-        text: "Prioritize delivery over experimentation — there will be time to innovate after you've built more trust.",
+        text: "Prioritize delivery over experimentation. There will be time to innovate after you've built more trust.",
         scores: [3, 4, 2, 2, 2, 2, 2, 3, 3, 2, 3, 3, 2],
       },
       {
@@ -411,7 +411,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: 'Compartmentalize and maintain performance standards — personal and professional should remain separate.',
+        text: 'Compartmentalize and maintain performance standards. Personal and professional should remain separate.',
         scores: [2, 4, 3, 1, 2, 2, 2, 3, 2, 1, 2, 2, 2],
       },
       {
@@ -466,7 +466,7 @@ export const SCENARIOS: Scenario[] = [
     choices: [
       {
         id: 'A',
-        text: 'Promote the more qualified candidate based on merit, regardless of flight risk — rewarding performance is the right signal.',
+        text: 'Promote the more qualified candidate based on merit, regardless of flight risk. Rewarding performance is the right signal.',
         scores: [3, 3, 3, 1, 2, 3, 1, 4, 3, 2, 3, 2, 3],
       },
       {
@@ -501,7 +501,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: 'Increase accountability measures — if the process is right, people need to follow it regardless of preferences.',
+        text: 'Increase accountability measures. If the process is right, people need to follow it regardless of preferences.',
         scores: [2, 3, 4, 1, 2, 2, 2, 3, 2, 1, 2, 2, 2],
       },
       {
@@ -511,7 +511,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'D',
-        text: 'Re-evaluate whether the process is actually necessary — maybe the resistance is telling you something.',
+        text: 'Re-evaluate whether the process is actually necessary. Maybe the resistance is telling you something.',
         scores: [3, 3, 2, 2, 2, 3, 1, 2, 3, 3, 3, 3, 3],
       },
     ],
@@ -531,7 +531,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: 'Maintain strict confidentiality without acknowledging you know anything — protecting the process is most important.',
+        text: 'Maintain strict confidentiality without acknowledging you know anything. Protecting the process is most important.',
         scores: [2, 4, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 1],
       },
       {
@@ -541,7 +541,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'D',
-        text: 'Push leadership to communicate faster or allow you to share more — the anxiety is affecting productivity.',
+        text: 'Push leadership to communicate faster or allow you to share more. The anxiety is affecting productivity.',
         scores: [3, 2, 4, 3, 3, 3, 0, 4, 3, 3, 3, 2, 3],
       },
     ],
@@ -561,7 +561,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'B',
-        text: 'Focus primarily on the fix and future prevention — dwelling on the mistake doesn\'t help anyone.',
+        text: 'Focus primarily on the fix and future prevention. Dwelling on the mistake doesn\'t help anyone.',
         scores: [2, 3, 4, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2],
       },
       {
@@ -571,7 +571,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'D',
-        text: 'Use this as a learning moment for your team — demonstrating how to handle mistakes builds trust and models growth.',
+        text: 'Use this as a learning moment for your team. Demonstrating how to handle mistakes builds trust and models growth.',
         scores: [4, 3, 3, 3, 4, 4, 0, 3, 4, 4, 4, 4, 4],
       },
     ],
@@ -581,12 +581,12 @@ export const SCENARIOS: Scenario[] = [
     number: 20,
     title: 'The Leadership Crossroads',
     context:
-      'You\'re offered a significant promotion that would mean leaving a team you\'ve built and genuinely care about. The timing feels premature — the team still needs development, and you have unfinished business.',
+      'You\'re offered a significant promotion that would mean leaving a team you\'ve built and genuinely care about. The timing feels premature. The team still needs development, and you have unfinished business.',
     question: 'How do you decide?',
     choices: [
       {
         id: 'A',
-        text: 'Accept the opportunity — your growth benefits everyone eventually, and holding yourself back isn\'t the answer.',
+        text: 'Accept the opportunity. Your growth benefits everyone eventually, and holding yourself back isn\'t the answer.',
         scores: [3, 2, 4, 2, 3, 3, 1, 4, 3, 2, 3, 2, 3],
       },
       {
@@ -596,7 +596,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'C',
-        text: 'Decline for now and communicate clearly what conditions would make you ready — the opportunity will return.',
+        text: 'Decline for now and communicate clearly what conditions would make you ready. The opportunity will return.',
         scores: [3, 4, 2, 4, 2, 3, 1, 2, 3, 3, 3, 4, 3],
       },
       {

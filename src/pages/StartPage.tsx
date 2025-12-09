@@ -48,7 +48,7 @@ function StartPage() {
           <h1>Begin Your E.Q.U.I.P. 360 Assessment</h1>
           <div className="start-quote">
             <p className="text-accent">
-              "Let's discover the leader you already are — and the one you're
+              "Let's discover the leader you already are, and the one you're
               becoming."
             </p>
           </div>

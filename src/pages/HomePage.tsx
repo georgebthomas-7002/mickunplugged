@@ -19,7 +19,7 @@ function HomePage() {
             Discover how you think, decide, and influence when emotional
             intelligence meets intelligent pressure. Unlike traditional
             assessments, E.Q.U.I.P. 360 measures{' '}
-            <span className="text-gold">emotional performance</span> — the
+            <span className="text-gold">emotional performance</span>: the
             behaviors that define leadership when pressure, emotion, and
             expectation collide.
           </p>
@@ -36,7 +36,7 @@ function HomePage() {
           <blockquote className="quote">
             "No leader rises to the moment. You rise to your level of emotional
             preparation."
-            <span className="quote-author">— The E.Q.U.I.P. 360 Leadership Mandate</span>
+            <span className="quote-author">The E.Q.U.I.P. 360 Leadership Mandate</span>
           </blockquote>
         </div>
       </section>
@@ -73,13 +73,13 @@ function HomePage() {
               <h3>Behavioral Reality</h3>
               <p className="layer-subtitle">The B.E.D. Factors</p>
               <p>
-                Your decision patterns — whether driven by fear, control,
+                Your decision patterns, whether driven by fear, control,
                 connection, or confidence.
               </p>
               <ul className="layer-list">
-                <li>Beliefs — Stories that shape your lens</li>
-                <li>Excuses — Protection patterns under tension</li>
-                <li>Decisions — How boldly you choose direction</li>
+                <li>Beliefs: Stories that shape your lens</li>
+                <li>Excuses: Protection patterns under tension</li>
+                <li>Decisions: How boldly you choose direction</li>
               </ul>
             </div>
 
