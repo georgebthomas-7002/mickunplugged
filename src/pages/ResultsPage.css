@@ -606,11 +606,11 @@
   flex-wrap: wrap;
 }
 
-/* Print Styles */
+/* Print Styles - Compact layout for fewer pages */
 @media print {
-  /* Reset page settings */
+  /* Tighter page margins */
   @page {
-    margin: 0.75in;
+    margin: 0.4in;
     size: letter;
   }
 
@@ -629,11 +629,12 @@
     min-height: auto;
   }
 
-  /* Header adjustments for print */
+  /* Header - compact */
   .results-header {
     background: white !important;
-    padding: 0.5in 0 0.25in 0 !important;
-    border-bottom: 2px solid #b8860b;
+    padding: 0 0 8pt 0 !important;
+    margin-bottom: 8pt !important;
+    border-bottom: 1px solid #b8860b;
   }
 
   .results-header::after {
@@ -642,64 +643,82 @@
 
   .results-header h1 {
     color: #1a1a1a !important;
-    font-size: 1.75rem;
+    font-size: 14pt;
+    margin-bottom: 2pt !important;
   }
 
   .results-for {
     color: #4a4a4a !important;
+    font-size: 10pt;
   }
 
-  /* Identity Section */
+  /* Identity Section - compact */
   .identity-section {
-    padding: 0.25in 0 !important;
-    page-break-inside: avoid;
+    padding: 8pt 0 !important;
   }
 
   .identity-card {
     background: white !important;
-    border: 2px solid #b8860b !important;
+    border: 1px solid #b8860b !important;
     box-shadow: none !important;
-    padding: 0.25in !important;
+    padding: 8pt !important;
   }
 
   .identity-family h2 {
     color: #b8860b !important;
-    font-size: 1.5rem;
+    font-size: 12pt;
+    margin-bottom: 2pt !important;
   }
 
   .family-tagline {
     color: #4a4a4a !important;
+    font-size: 9pt;
+    margin-bottom: 6pt !important;
   }
 
   .identity-divider {
     background: #ddd !important;
+    margin: 6pt 0 !important;
   }
 
   .identity-type h3 {
     color: #1a1a1a !important;
-    font-size: 1.25rem;
+    font-size: 11pt;
+    margin-bottom: 2pt !important;
   }
 
   .type-tagline {
     color: #b8860b !important;
+    font-size: 9pt;
   }
 
   .type-description {
     color: #333 !important;
+    font-size: 9pt;
+    line-height: 1.4;
+    margin-bottom: 6pt !important;
+  }
+
+  .traits-container {
+    gap: 6pt !important;
   }
 
   .trait-group {
     background: #f8f8f8 !important;
     border: 1px solid #ddd;
-    page-break-inside: avoid;
+    padding: 6pt !important;
   }
 
   .trait-group h4 {
     color: #b8860b !important;
+    font-size: 9pt;
+    margin-bottom: 4pt !important;
   }
 
   .trait-group li {
     color: #333 !important;
+    font-size: 8pt;
+    line-height: 1.3;
   }
 
   .trait-group li::before {
@@ -710,25 +729,45 @@
     background: #fff8e7 !important;
     border-color: #b8860b !important;
     color: #333 !important;
+    font-size: 9pt;
+    padding: 6pt !important;
+    margin-top: 6pt !important;
   }
 
   .best-utilization strong {
     color: #8b6914 !important;
   }
 
-  /* Scores Section */
+  /* Scores Section - compact, no page break */
   .scores-section {
     background: white !important;
-    padding: 0.25in 0 !important;
-    page-break-before: always;
+    padding: 8pt 0 !important;
   }
 
   .section-title {
     color: #1a1a1a !important;
+    font-size: 11pt;
+    margin-bottom: 6pt !important;
+  }
+
+  .overall-scores {
+    gap: 12pt !important;
+    margin-bottom: 8pt !important;
   }
 
   .score-ring-container {
-    page-break-inside: avoid;
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .ring-value {
+    color: #b8860b !important;
+    font-size: 14pt !important;
+  }
+
+  .ring-label {
+    color: #4a4a4a !important;
+    font-size: 8pt !important;
   }
 
   .ring-bg {
@@ -739,29 +778,29 @@
     stroke: #b8860b !important;
   }
 
-  .ring-value {
-    color: #b8860b !important;
-  }
-
-  .ring-label {
-    color: #4a4a4a !important;
+  .categories-breakdown {
+    gap: 6pt !important;
   }
 
   .category-score {
     background: #f8f8f8 !important;
     border: 1px solid #ddd;
+    padding: 6pt !important;
   }
 
   .category-header h4 {
     color: #1a1a1a !important;
+    font-size: 9pt;
   }
 
   .category-percent {
     color: #b8860b !important;
+    font-size: 10pt;
   }
 
   .category-bar {
     background: #e0e0e0 !important;
+    height: 6px !important;
   }
 
   .category-fill.eq,
@@ -779,40 +818,50 @@
 
   .category-level {
     color: #666 !important;
+    font-size: 8pt;
   }
 
-  /* Metrics Section */
+  /* Metrics Section - compact, no page break */
   .metrics-section {
-    padding: 0.25in 0 !important;
-    page-break-before: always;
+    padding: 8pt 0 !important;
   }
 
   .metrics-grid {
-    gap: 0.2in !important;
+    gap: 6pt !important;
   }
 
   .metrics-card {
     background: white !important;
     border: 1px solid #ddd !important;
     box-shadow: none !important;
-    page-break-inside: avoid;
+    padding: 6pt !important;
   }
 
   .metrics-card h3 {
     color: #b8860b !important;
     border-bottom-color: #ddd !important;
+    font-size: 10pt;
+    padding-bottom: 4pt !important;
+    margin-bottom: 6pt !important;
+  }
+
+  .metric-item {
+    margin-bottom: 4pt !important;
   }
 
   .metric-name {
     color: #333 !important;
+    font-size: 8pt;
   }
 
   .metric-percent {
     color: #1a1a1a !important;
+    font-size: 8pt;
   }
 
   .metric-bar {
     background: #e0e0e0 !important;
+    height: 4px !important;
   }
 
   .metric-fill {
@@ -821,10 +870,10 @@
     print-color-adjust: exact !important;
   }
 
-  /* Insight Sections */
+  /* Insight Sections - compact */
   .insight-section {
     background: white !important;
-    padding: 0.2in 0 !important;
+    padding: 8pt 0 !important;
   }
 
   .insight-section:nth-child(even) {
@@ -835,82 +884,107 @@
     background: white !important;
     border: 1px solid #ddd !important;
     box-shadow: none !important;
-    page-break-inside: avoid;
+    padding: 8pt !important;
   }
 
   .insight-card.gold-border {
-    border: 2px solid #b8860b !important;
+    border: 1px solid #b8860b !important;
     box-shadow: none !important;
   }
 
   .insight-header {
     border-bottom-color: #ddd !important;
+    padding-bottom: 4pt !important;
+    margin-bottom: 6pt !important;
   }
 
   .insight-header h3 {
     color: #b8860b !important;
+    font-size: 10pt;
+  }
+
+  .insight-icon {
+    font-size: 14pt !important;
   }
 
   .insight-text {
     color: #333 !important;
+    font-size: 9pt;
+    line-height: 1.4;
   }
 
-  /* B.E.D. Profile and Your Move - no card background in print */
+  /* B.E.D. Profile and Your Move - no card background */
   .bed-section .insight-card,
   .move-section .insight-card {
     background: transparent !important;
     border: none !important;
-    padding: 0.15in 0 !important;
+    padding: 4pt 0 !important;
   }
 
   /* B.E.D. Profile */
+  .bed-insights {
+    gap: 6pt !important;
+  }
+
   .bed-item h4 {
     color: #b8860b !important;
+    font-size: 9pt;
+    margin-bottom: 2pt !important;
   }
 
   .bed-item p {
     color: #333 !important;
+    font-size: 9pt;
+    line-height: 1.4;
   }
 
   /* Your Move Section */
   .move-intro {
     color: #4a4a4a !important;
+    font-size: 9pt;
+    margin-bottom: 6pt !important;
+  }
+
+  .move-list {
+    gap: 4pt !important;
   }
 
   .move-list li {
     color: #333 !important;
-    page-break-inside: avoid;
+    font-size: 9pt;
+    line-height: 1.4;
+    padding-left: 12pt !important;
   }
 
   .move-list li::before {
     color: #b8860b !important;
   }
 
-  /* Quote Section */
+  /* Quote Section - compact */
   .results-page .quote-section {
     background: white !important;
-    padding: 0.25in 0 !important;
-    page-break-inside: avoid;
+    padding: 8pt 0 !important;
   }
 
   .results-quote {
     color: #8b6914 !important;
-    font-size: 1.25rem;
+    font-size: 10pt;
   }
 
   .results-quote .quote-author {
     color: #666 !important;
+    font-size: 8pt;
   }
 
   /* Print footer with branding */
   .results-page::after {
-    content: "E.Q.U.I.P. 360 Leadership Assessment • www.equip360.com";
+    content: "E.Q.U.I.P. 360 Leadership Assessment";
     display: block;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 8pt;
     color: #999;
-    padding-top: 0.25in;
-    margin-top: 0.25in;
+    padding-top: 8pt;
+    margin-top: 8pt;
     border-top: 1px solid #ddd;
   }
 
