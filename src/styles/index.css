@@ -1,53 +1,61 @@
 /* E.Q.U.I.P. 360 Design System */
-/* Brand Color Palette */
+/* Premium Brand Experience */
 
 :root {
-  /* Brand Colors - Gold (Primary) */
-  --color-gold: #FFC627;
-  --color-gold-light: #FFD75E;
-  --color-gold-dark: #D4A300;
-  --color-gold-muted: rgba(255, 198, 39, 0.1);
-  --color-gold-glow: rgba(255, 198, 39, 0.3);
+  /* Brand Colors - Gold (Primary) - Rich & Luxurious */
+  --color-gold: #FFD639;
+  --color-gold-light: #FFE57A;
+  --color-gold-dark: #E5B800;
+  --color-gold-deep: #CC9900;
+  --color-gold-muted: rgba(255, 214, 57, 0.12);
+  --color-gold-glow: rgba(255, 214, 57, 0.4);
+  --color-gold-subtle: rgba(255, 214, 57, 0.06);
 
-  /* Brand Colors - Blue (Accent) */
-  --color-blue: #00A3E0;
-  --color-blue-light: #33B5E8;
-  --color-blue-dark: #0082B3;
-  --color-blue-muted: rgba(0, 163, 224, 0.1);
+  /* Brand Colors - Blue (Accent) - Electric & Premium */
+  --color-blue: #00B4F0;
+  --color-blue-light: #4DC9F6;
+  --color-blue-dark: #0095CC;
+  --color-blue-deep: #006B99;
+  --color-blue-muted: rgba(0, 180, 240, 0.12);
+  --color-blue-glow: rgba(0, 180, 240, 0.35);
+  --color-blue-subtle: rgba(0, 180, 240, 0.06);
 
-  /* Brand Colors - Dark */
+  /* Brand Colors - Dark Spectrum */
   --color-black: #000000;
-  --color-navy: #0C2340;
-  --color-charcoal: #1A1A1A;
-  --color-dark-gray: #6E6E6E;
-  --color-medium-gray: #9E9E9E;
-  --color-light-gray: #BEBEBE;
-  --color-off-white: #E8E8E8;
+  --color-void: #050508;
+  --color-navy: #0A1628;
+  --color-navy-light: #122444;
+  --color-charcoal: #141419;
+  --color-slate: #1E1E26;
+  --color-dark-gray: #6B7280;
+  --color-medium-gray: #9CA3AF;
+  --color-light-gray: #D1D5DB;
+  --color-off-white: #F3F4F6;
   --color-white: #FFFFFF;
 
   /* Semantic Colors */
-  --color-success: #4CAF50;
+  --color-success: #10B981;
   --color-warning: var(--color-gold);
-  --color-error: #F44336;
+  --color-error: #EF4444;
   --color-info: var(--color-blue);
 
-  /* Primary/Secondary mapping for compatibility */
+  /* Primary/Secondary mapping */
   --color-primary: var(--color-gold);
   --color-primary-light: var(--color-gold-light);
   --color-primary-dark: var(--color-gold-dark);
   --color-secondary: var(--color-blue);
 
-  /* Gray scale mapping */
-  --color-gray-50: #F5F5F5;
-  --color-gray-100: #E8E8E8;
-  --color-gray-200: #DEDEDE;
-  --color-gray-300: #BEBEBE;
-  --color-gray-400: #9E9E9E;
-  --color-gray-500: #6E6E6E;
-  --color-gray-600: #4A4A4A;
-  --color-gray-700: #2D2D2D;
-  --color-gray-800: #1A1A1A;
-  --color-gray-900: #0C2340;
+  /* Gray scale - Enhanced Contrast */
+  --color-gray-50: #FAFAFA;
+  --color-gray-100: #F3F4F6;
+  --color-gray-200: #E5E7EB;
+  --color-gray-300: #D1D5DB;
+  --color-gray-400: #9CA3AF;
+  --color-gray-500: #6B7280;
+  --color-gray-600: #4B5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1F2937;
+  --color-gray-900: #0A1628;
 
   /* Typography - Montserrat */
   --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -63,7 +71,7 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
-  /* Spacing */
+  /* Spacing - Refined */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -72,26 +80,39 @@
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
   --spacing-4xl: 6rem;
+  --spacing-5xl: 8rem;
 
-  /* Border radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* Border radius - Premium Feel */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
-  --shadow-gold: 0 4px 20px rgba(255, 198, 39, 0.35);
-  --shadow-glow: 0 0 30px rgba(255, 198, 39, 0.25);
-  --shadow-blue: 0 4px 20px rgba(0, 163, 224, 0.3);
+  /* Shadows - Layered & Dimensional */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5), 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.6), 0 12px 24px rgba(0, 0, 0, 0.4);
+  --shadow-gold: 0 8px 32px rgba(255, 214, 57, 0.4), 0 4px 16px rgba(255, 214, 57, 0.3);
+  --shadow-gold-intense: 0 0 60px rgba(255, 214, 57, 0.5), 0 0 100px rgba(255, 214, 57, 0.3);
+  --shadow-glow: 0 0 40px rgba(255, 214, 57, 0.35), 0 0 80px rgba(255, 214, 57, 0.2);
+  --shadow-blue: 0 8px 32px rgba(0, 180, 240, 0.35), 0 4px 16px rgba(0, 180, 240, 0.25);
+  --shadow-blue-intense: 0 0 60px rgba(0, 180, 240, 0.4), 0 0 100px rgba(0, 180, 240, 0.2);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
-  /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
+  /* Glass Effect */
+  --glass-bg: rgba(20, 20, 25, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.05);
+
+  /* Transitions - Smooth & Premium */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Reset and base styles */
@@ -174,62 +195,83 @@ a:hover {
   color: var(--color-gold-light);
 }
 
-/* Button styles */
+/* Button styles - Premium */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 2rem;
+  gap: 0.625rem;
+  padding: 1rem 2.25rem;
   font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border-radius: var(--radius-sm);
+  letter-spacing: 0.15em;
+  border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   transition: all var(--transition-base);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
 }
 
 .btn:hover {
   text-decoration: none;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-dark) 100%);
+  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 50%, var(--color-gold-dark) 100%);
   color: var(--color-black);
-  box-shadow: var(--shadow-gold);
+  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
-  box-shadow: var(--shadow-glow);
+  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold-light) 50%, var(--color-gold) 100%);
+  box-shadow: var(--shadow-gold-intense), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   color: var(--color-black);
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background: var(--glass-bg);
   color: var(--color-gold);
-  border: 2px solid var(--color-gold);
+  border: 1px solid var(--color-gold);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-glass);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--color-gold-muted);
+  background: var(--color-gold-muted);
   border-color: var(--color-gold-light);
   color: var(--color-gold-light);
+  box-shadow: var(--shadow-gold);
 }
 
 .btn-outline {
