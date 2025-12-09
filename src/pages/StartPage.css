@@ -88,7 +88,7 @@
 }
 
 .detail-item span {
-  color: var(--color-gray-400);
+  color: var(--color-gray-300);
   font-size: 0.875rem;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .start-note p {
-  color: var(--color-gray-300);
+  color: var(--color-gray-200);
   font-size: 0.875rem;
   margin: 0;
 }
@@ -129,7 +129,7 @@
 }
 
 .form-subtitle {
-  color: var(--color-gray-400);
+  color: var(--color-gray-300);
   font-size: 0.875rem;
   margin-bottom: var(--spacing-xl);
 }
@@ -157,7 +157,7 @@
 
 .form-privacy {
   text-align: center;
-  color: var(--color-gray-500);
+  color: var(--color-gray-400);
   font-size: 0.75rem;
   margin: 0;
 }

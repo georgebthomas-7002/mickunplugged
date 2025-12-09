@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-md);
-  color: var(--color-gray-400);
+  color: var(--color-gray-300);
 }
 
 .loading-spinner {
@@ -145,7 +145,7 @@
 .scenario-context p {
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: var(--color-gray-200);
+  color: var(--color-white);
   margin: 0;
 }
 
@@ -215,7 +215,7 @@
 .choice-text {
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--color-gray-200);
+  color: var(--color-gray-100);
   padding-top: 0.125rem;
 }
 

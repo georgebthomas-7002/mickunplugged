@@ -108,7 +108,7 @@
   font-family: var(--font-accent);
   font-style: italic;
   font-size: 1.125rem;
-  color: var(--color-gray-300);
+  color: var(--color-gray-200);
   margin: 0;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .type-description {
-  color: var(--color-gray-300);
+  color: var(--color-gray-200);
   font-size: 1.125rem;
   margin: 0;
 }
