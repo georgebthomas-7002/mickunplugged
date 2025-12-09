@@ -593,20 +593,314 @@
 
 /* Print Styles */
 @media print {
-  .results-header,
-  .actions-section {
+  /* Reset page settings */
+  @page {
+    margin: 0.75in;
+    size: letter;
+  }
+
+  /* Hide non-essential elements */
+  .results-header .results-badge,
+  .actions-section,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  /* Base page styles */
+  .results-page {
+    background: white !important;
+    color: #1a1a1a !important;
+    min-height: auto;
+  }
+
+  /* Header adjustments for print */
+  .results-header {
+    background: white !important;
+    padding: 0.5in 0 0.25in 0 !important;
+    border-bottom: 2px solid #b8860b;
+  }
+
+  .results-header::after {
     display: none;
   }
 
-  .results-page {
-    background: white;
-    color: black;
+  .results-header h1 {
+    color: #1a1a1a !important;
+    font-size: 1.75rem;
   }
 
-  .identity-card,
-  .metrics-card,
+  .results-for {
+    color: #4a4a4a !important;
+  }
+
+  /* Identity Section */
+  .identity-section {
+    padding: 0.25in 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .identity-card {
+    background: white !important;
+    border: 2px solid #b8860b !important;
+    box-shadow: none !important;
+    padding: 0.25in !important;
+  }
+
+  .identity-family h2 {
+    color: #b8860b !important;
+    font-size: 1.5rem;
+  }
+
+  .family-tagline {
+    color: #4a4a4a !important;
+  }
+
+  .identity-divider {
+    background: #ddd !important;
+  }
+
+  .identity-type h3 {
+    color: #1a1a1a !important;
+    font-size: 1.25rem;
+  }
+
+  .type-tagline {
+    color: #b8860b !important;
+  }
+
+  .type-description {
+    color: #333 !important;
+  }
+
+  .trait-group {
+    background: #f8f8f8 !important;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+
+  .trait-group h4 {
+    color: #b8860b !important;
+  }
+
+  .trait-group li {
+    color: #333 !important;
+  }
+
+  .trait-group li::before {
+    color: #b8860b !important;
+  }
+
+  .best-utilization {
+    background: #fff8e7 !important;
+    border-color: #b8860b !important;
+    color: #333 !important;
+  }
+
+  .best-utilization strong {
+    color: #8b6914 !important;
+  }
+
+  /* Scores Section */
+  .scores-section {
+    background: white !important;
+    padding: 0.25in 0 !important;
+    page-break-before: always;
+  }
+
+  .section-title {
+    color: #1a1a1a !important;
+  }
+
+  .score-ring-container {
+    page-break-inside: avoid;
+  }
+
+  .ring-bg {
+    stroke: #e0e0e0 !important;
+  }
+
+  .ring-fill {
+    stroke: #b8860b !important;
+  }
+
+  .ring-value {
+    color: #b8860b !important;
+  }
+
+  .ring-label {
+    color: #4a4a4a !important;
+  }
+
   .category-score {
-    background: white;
-    border-color: #ccc;
+    background: #f8f8f8 !important;
+    border: 1px solid #ddd;
+  }
+
+  .category-header h4 {
+    color: #1a1a1a !important;
+  }
+
+  .category-percent {
+    color: #b8860b !important;
+  }
+
+  .category-bar {
+    background: #e0e0e0 !important;
+  }
+
+  .category-fill.eq,
+  .category-fill.bed {
+    background: #3d8fd1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .category-fill.culture {
+    background: #b8860b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .category-level {
+    color: #666 !important;
+  }
+
+  /* Metrics Section */
+  .metrics-section {
+    padding: 0.25in 0 !important;
+    page-break-before: always;
+  }
+
+  .metrics-grid {
+    gap: 0.2in !important;
+  }
+
+  .metrics-card {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .metrics-card h3 {
+    color: #b8860b !important;
+    border-bottom-color: #ddd !important;
+  }
+
+  .metric-name {
+    color: #333 !important;
+  }
+
+  .metric-percent {
+    color: #1a1a1a !important;
+  }
+
+  .metric-bar {
+    background: #e0e0e0 !important;
+  }
+
+  .metric-fill {
+    background: #b8860b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Insight Sections */
+  .insight-section {
+    background: white !important;
+    padding: 0.2in 0 !important;
+  }
+
+  .insight-section:nth-child(even) {
+    background: white !important;
+  }
+
+  .insight-card {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .insight-card.gold-border {
+    border: 2px solid #b8860b !important;
+    box-shadow: none !important;
+  }
+
+  .insight-header {
+    border-bottom-color: #ddd !important;
+  }
+
+  .insight-header h3 {
+    color: #b8860b !important;
+  }
+
+  .insight-text {
+    color: #333 !important;
+  }
+
+  /* B.E.D. Profile */
+  .bed-item h4 {
+    color: #b8860b !important;
+  }
+
+  .bed-item p {
+    color: #333 !important;
+  }
+
+  /* Your Move Section */
+  .move-intro {
+    color: #4a4a4a !important;
+  }
+
+  .move-list li {
+    color: #333 !important;
+    page-break-inside: avoid;
+  }
+
+  .move-list li::before {
+    color: #b8860b !important;
+  }
+
+  /* Quote Section */
+  .results-page .quote-section {
+    background: white !important;
+    padding: 0.25in 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .results-quote {
+    color: #8b6914 !important;
+    font-size: 1.25rem;
+  }
+
+  .results-quote .quote-author {
+    color: #666 !important;
+  }
+
+  /* Print footer with branding */
+  .results-page::after {
+    content: "E.Q.U.I.P. 360 Leadership Assessment • www.equip360.com";
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #999;
+    padding-top: 0.25in;
+    margin-top: 0.25in;
+    border-top: 1px solid #ddd;
+  }
+
+  /* Ensure colors print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Container adjustments for print */
+  .container,
+  .container-narrow {
+    max-width: 100% !important;
+    padding: 0 !important;
   }
 }

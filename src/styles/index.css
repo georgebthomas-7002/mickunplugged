@@ -479,3 +479,48 @@ label {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-gold);
 }
+
+/* Global Print Styles */
+@media print {
+  /* Hide site navigation and footer */
+  .header,
+  .footer,
+  nav,
+  .nav-link {
+    display: none !important;
+  }
+
+  /* Reset body for print */
+  body {
+    background: white !important;
+    color: #1a1a1a !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  /* Ensure links don't show URL */
+  a[href]::after {
+    content: none !important;
+  }
+
+  /* Remove shadows and gradients for cleaner printing */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Prevent elements from being cut across pages */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  img, svg {
+    page-break-inside: avoid;
+  }
+
+  p, blockquote, ul, ol {
+    orphans: 3;
+    widows: 3;
+  }
+}
