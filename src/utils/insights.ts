@@ -16,7 +16,7 @@ export function getCultureRippleInsight(
 ): string {
   const family = LEADERSHIP_FAMILIES[familyCode];
   const cultureLevel = getLevel(scores.culture.percentage);
-  const trustLevel = getLevel((scores.culture.TB / 100) * 100);
+  const trustLevel = getLevel((scores.culture.T / 100) * 100);
   const safetyLevel = getLevel((scores.culture.PS / 100) * 100);
 
   const insights: Record<string, string> = {
@@ -42,7 +42,7 @@ export function getBEDProfileInsight(
 ): { beliefs: string; excuses: string; decisions: string } {
   const type = LEADERSHIP_TYPES[typeCode];
   const beliefsLevel = getLevel((scores.bed.B / 100) * 100);
-  const excusesLevel = getLevel((scores.bed.E / 100) * 100);
+  const excusesLevel = getLevel((scores.bed.EX / 100) * 100);
   const decisionsLevel = getLevel((scores.bed.D / 100) * 100);
 
   const beliefs: Record<string, string> = {
@@ -76,7 +76,6 @@ export function getPressurePatternInsight(
   typeCode: LeadershipTypeCode
 ): string {
   const type = LEADERSHIP_TYPES[typeCode];
-  const eqLevel = getLevel(scores.eq.percentage);
   const regulationScore = (scores.eq.SR / 100) * 100;
   const awarenessScore = (scores.eq.SA / 100) * 100;
 
@@ -106,7 +105,6 @@ export function getGrowthRecommendations(
   familyCode: LeadershipFamilyCode
 ): string[] {
   const type = LEADERSHIP_TYPES[typeCode];
-  const family = LEADERSHIP_FAMILIES[familyCode];
   const recommendations: string[] = [];
 
   // Based on lowest EQ pillar
@@ -129,9 +127,9 @@ export function getGrowthRecommendations(
   recommendations.push(eqRecommendations[lowestEQ[0]]);
 
   // Based on B.E.D. patterns
-  if (scores.bed.B < scores.bed.E && scores.bed.B < scores.bed.D) {
+  if (scores.bed.B < scores.bed.EX && scores.bed.B < scores.bed.D) {
     recommendations.push('Challenge limiting beliefs. When you notice negative self-talk, write it down and actively reframe it with evidence-based alternatives.');
-  } else if (scores.bed.E < scores.bed.D) {
+  } else if (scores.bed.EX < scores.bed.D) {
     recommendations.push('Practice radical ownership. For the next week, eliminate phrases like "I had to" or "They made me" from your vocabulary.');
   } else {
     recommendations.push('Build decision momentum. Start each day by making one clear decision quickly, building your confidence in faster decision-making.');
