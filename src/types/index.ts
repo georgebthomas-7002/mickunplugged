@@ -1,2 +1,2 @@
-// Re-export all types
-export * from './assessment';
+// E.Q.U.I.P. 360 Type Definitions
+export * from './equip360';
