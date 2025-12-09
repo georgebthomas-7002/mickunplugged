@@ -47,6 +47,10 @@
   color: var(--color-gold);
 }
 
+.footer-logo .text-blue {
+  color: var(--color-blue);
+}
+
 .footer-tagline {
   font-family: var(--font-accent);
   font-weight: 300;

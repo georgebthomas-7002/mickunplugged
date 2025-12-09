@@ -14,7 +14,7 @@ function HomePage() {
         <div className="hero-content">
           <span className="hero-badge">Leadership Assessment</span>
           <h1 className="hero-title">
-            <span className="shimmer">E.Q.U.I.P.</span> 360
+            <span className="shimmer">E.Q.U.I.P.</span> <span className="text-blue">360</span>
           </h1>
           <p className="hero-subtitle">
             Emotional Quotient Under Intelligent Pressure

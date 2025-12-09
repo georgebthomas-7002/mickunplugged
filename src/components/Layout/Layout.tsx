@@ -26,7 +26,7 @@ function Layout({ children }: LayoutProps) {
       <footer className="footer">
         <div className="footer-content">
           <p className="footer-brand">
-            <span className="footer-logo">E.Q.U.I.P. 360</span>
+            <span className="footer-logo">E.Q.U.I.P. <span className="text-blue">360</span></span>
             <span className="footer-tagline">Emotional Quotient Under Intelligent Pressure</span>
           </p>
           <p className="footer-copyright">
