@@ -352,7 +352,7 @@
 
 /* Leadership Families Section - Showcase */
 .families-section {
-  padding: var(--spacing-5xl) var(--spacing-lg);
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-5xl);
   background:
     radial-gradient(ellipse 100% 60% at 0% 50%, var(--color-blue-subtle) 0%, transparent 50%),
     radial-gradient(ellipse 100% 60% at 100% 50%, var(--color-gold-subtle) 0%, transparent 50%),
@@ -428,7 +428,7 @@
 
 /* Results Preview Section - Sleek */
 .results-preview-section {
-  padding: var(--spacing-5xl) var(--spacing-lg);
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-4xl);
   background: var(--color-void);
   position: relative;
 }
@@ -498,7 +498,7 @@
 
 /* CTA Section - Grand Finale */
 .cta-section {
-  padding: var(--spacing-5xl) var(--spacing-lg);
+  padding: var(--spacing-3xl) var(--spacing-lg) var(--spacing-4xl);
   background:
     radial-gradient(ellipse 80% 60% at 50% 100%, var(--color-navy-light) 0%, transparent 60%),
     var(--color-void);
@@ -520,7 +520,7 @@
 
 .cta-card {
   text-align: center;
-  padding: var(--spacing-4xl) var(--spacing-3xl);
+  padding: var(--spacing-2xl) var(--spacing-xl);
   background: var(--glass-bg);
   backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
