@@ -469,6 +469,21 @@
   margin: 0;
 }
 
+/* B.E.D. Profile and Your Move - No card background */
+.bed-section .insight-card,
+.move-section .insight-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: var(--spacing-lg) 0;
+}
+
+.bed-section .insight-card.gold-border,
+.move-section .insight-card.gold-border {
+  border: none;
+  box-shadow: none;
+}
+
 /* B.E.D. Profile */
 .bed-insights {
   display: flex;
@@ -838,6 +853,14 @@
 
   .insight-text {
     color: #333 !important;
+  }
+
+  /* B.E.D. Profile and Your Move - no card background in print */
+  .bed-section .insight-card,
+  .move-section .insight-card {
+    background: transparent !important;
+    border: none !important;
+    padding: 0.15in 0 !important;
   }
 
   /* B.E.D. Profile */
