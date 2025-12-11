@@ -41,8 +41,14 @@ export default async function handler(
     const contactId = await findContactByEmail(contactEmail);
 
     if (!contactId) {
-      console.log(`Contact not found for ${contactEmail}, creating engagement without contact association`);
+      console.log(`Contact not found for ${contactEmail}`);
+      return res.status(404).json({
+        success: false,
+        error: 'Contact not found in HubSpot',
+      });
     }
+
+    console.log(`Found contact ID: ${contactId}`);
 
     // Step 2: Upload file to HubSpot Files API
     const fileResult = await uploadFileToHubSpot(fileData, fileName);
@@ -54,14 +60,25 @@ export default async function handler(
       });
     }
 
-    // Step 3: Create a note with the file attached to the contact
-    if (contactId && fileResult.fileId) {
-      await createNoteWithAttachment(contactId, fileResult.fileId, fileName);
+    console.log(`File uploaded with ID: ${fileResult.fileId}`);
+
+    // Step 3: Create an engagement (note) with the file attached to the contact
+    const engagementResult = await createEngagementWithAttachment(
+      contactId,
+      fileResult.fileId!,
+      fileName
+    );
+
+    if (!engagementResult) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to attach file to contact',
+      });
     }
 
     return res.status(200).json({
       success: true,
-      message: 'PDF uploaded and attached to contact',
+      message: 'PDF uploaded and attached to contact record',
       fileUrl: fileResult.url,
       fileId: fileResult.fileId,
     });
@@ -111,7 +128,6 @@ async function findContactByEmail(email: string): Promise<string | null> {
     const data = await response.json();
 
     if (data.results && data.results.length > 0) {
-      console.log(`Found contact: ${data.results[0].id}`);
       return data.results[0].id;
     }
 
@@ -167,7 +183,7 @@ async function uploadFileToHubSpot(
     }
 
     const data = await response.json();
-    console.log('File uploaded:', data.id, data.url);
+    console.log('File uploaded:', data.id);
 
     return {
       success: true,
@@ -184,16 +200,18 @@ async function uploadFileToHubSpot(
 }
 
 /**
- * Create a note engagement with the PDF attached
+ * Create an engagement (note) with the PDF attached to the contact
+ * Uses the Engagements API to attach file directly to contact record
  */
-async function createNoteWithAttachment(
+async function createEngagementWithAttachment(
   contactId: string,
   fileId: string,
   fileName: string
 ): Promise<boolean> {
   try {
+    // Use the Engagements v1 API for reliable file attachments
     const response = await fetch(
-      'https://api.hubapi.com/crm/v3/objects/notes',
+      'https://api.hubapi.com/engagements/v1/engagements',
       {
         method: 'POST',
         headers: {
@@ -201,36 +219,40 @@ async function createNoteWithAttachment(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          properties: {
-            hs_timestamp: new Date().toISOString(),
-            hs_note_body: `E.Q.U.I.P. 360 Assessment Results - ${fileName}\n\nThis PDF contains the leadership assessment results for this contact.`,
-            hs_attachment_ids: fileId,
+          engagement: {
+            active: true,
+            type: 'NOTE',
+            timestamp: Date.now(),
           },
-          associations: [
+          associations: {
+            contactIds: [parseInt(contactId, 10)],
+            companyIds: [],
+            dealIds: [],
+            ownerIds: [],
+          },
+          attachments: [
             {
-              to: { id: contactId },
-              types: [
-                {
-                  associationCategory: 'HUBSPOT_DEFINED',
-                  associationTypeId: 202, // Note to Contact
-                },
-              ],
+              id: parseInt(fileId, 10),
             },
           ],
+          metadata: {
+            body: `<h3>E.Q.U.I.P. 360 Assessment Results</h3><p>File: ${fileName}</p><p>This PDF contains the complete leadership assessment results for this contact.</p>`,
+          },
         }),
       }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Note creation failed:', response.status, errorText);
+      console.error('Engagement creation failed:', response.status, errorText);
       return false;
     }
 
-    console.log('Note created with attachment for contact:', contactId);
+    const data = await response.json();
+    console.log('Engagement created with ID:', data.engagement?.id);
     return true;
   } catch (error) {
-    console.error('Error creating note:', error);
+    console.error('Error creating engagement:', error);
     return false;
   }
 }
