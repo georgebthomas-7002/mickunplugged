@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAssessment } from '@/context';
+import { submitToHubSpot } from '@/services';
 import './StartPage.css';
 
 function StartPage() {
@@ -9,12 +10,14 @@ function StartPage() {
 
   const [formData, setFormData] = useState({
     email: '',
-    name: '',
+    firstName: '',
+    lastName: '',
     company: '',
     role: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hubspotError, setHubspotError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,11 +27,30 @@ function StartPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setHubspotError(null);
 
-    // Register the user
+    // Submit to HubSpot in the background (don't block the user)
+    submitToHubSpot({
+      email: formData.email,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      company: formData.company || undefined,
+      jobTitle: formData.role || undefined,
+    }).then((result) => {
+      if (!result.success) {
+        // Log error but don't block the user
+        console.warn('HubSpot submission failed:', result.message);
+        setHubspotError(result.message);
+      } else {
+        console.log('HubSpot submission successful');
+      }
+    });
+
+    // Register the user locally
     registerUser({
       email: formData.email,
-      name: formData.name,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
       company: formData.company || undefined,
       role: formData.role || undefined,
     });
@@ -116,17 +138,32 @@ function StartPage() {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="name">Full Name *</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your full name"
-                  required
-                />
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="firstName">First Name *</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="First name"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="lastName">Last Name *</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Last name"
+                    required
+                  />
+                </div>
               </div>
 
               <div className="form-group">
@@ -142,7 +179,7 @@ function StartPage() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="role">Role (Optional)</label>
+                <label htmlFor="role">Job Title (Optional)</label>
                 <input
                   type="text"
                   id="role"
@@ -160,6 +197,12 @@ function StartPage() {
               >
                 {isSubmitting ? 'Starting...' : 'Start Assessment'}
               </button>
+
+              {hubspotError && (
+                <p className="form-error" style={{ color: '#ff6b6b', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                  Note: There was an issue saving your information. Your assessment will continue normally.
+                </p>
+              )}
 
               <p className="form-privacy">
                 By starting, you agree to our privacy policy and terms of

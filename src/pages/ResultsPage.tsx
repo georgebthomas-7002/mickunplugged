@@ -64,7 +64,7 @@ function ResultsPage() {
             <span className="title-line-1">Your E.Q.U.I.P. 360</span>
             <span className="title-line-2">Leadership Intelligence Report</span>
           </h1>
-          {user && <p className="results-for">Results for {user.name}</p>}
+          {user && <p className="results-for">Results for {user.firstName} {user.lastName}</p>}
         </div>
       </header>
 
