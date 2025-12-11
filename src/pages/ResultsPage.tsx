@@ -42,29 +42,47 @@ function ResultsPage() {
   useEffect(() => {
     // Only run if we have results, user email, and haven't uploaded yet
     if (!result || !user?.email || hasUploadedPDF.current) {
+      console.log('🔵 PDF upload skipped:', {
+        hasResult: !!result,
+        hasEmail: !!user?.email,
+        alreadyUploaded: hasUploadedPDF.current,
+      });
       return;
     }
 
     // Wait for the page to fully render before capturing
     const uploadPDF = async () => {
       // Small delay to ensure the page is fully rendered
+      console.log('🔵 Waiting 1.5s for page to render...');
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const pdfFileName = `EQUIP360-${user.firstName}-${user.lastName}-${new Date().toISOString().split('T')[0]}`;
 
-      console.log('🔵 Auto-generating PDF for HubSpot upload...');
+      console.log('🔵 Starting PDF generation for:', pdfFileName);
+      console.log('🔵 User email:', user.email);
 
       try {
         const pdfResult = await generateResultsPDF('results-pdf-content', pdfFileName);
+
+        console.log('🔵 PDF generation result:', {
+          success: pdfResult.success,
+          hasBlob: !!pdfResult.blob,
+          hasBase64: !!pdfResult.base64,
+          base64Length: pdfResult.base64?.length,
+          error: pdfResult.error,
+        });
 
         if (!pdfResult.success || !pdfResult.base64) {
           console.error('❌ PDF generation failed:', pdfResult.error);
           return;
         }
 
-        console.log('🔵 PDF generated, uploading to HubSpot...');
+        console.log('🔵 PDF generated successfully, uploading to HubSpot...');
+        console.log('🔵 Base64 data length:', pdfResult.base64.length);
 
         const uploadResult = await uploadPDFToHubSpot(pdfResult.base64, pdfFileName, user.email);
+
+        console.log('🔵 HubSpot upload result:', uploadResult);
 
         if (uploadResult.success) {
           console.log('✅ PDF automatically uploaded to HubSpot');

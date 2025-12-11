@@ -125,40 +125,66 @@ export async function uploadPDFToHubSpot(
   base64Data: string,
   fileName: string,
   contactEmail: string
-): Promise<{ success: boolean; message: string; fileUrl?: string }> {
+): Promise<{ success: boolean; message: string; fileUrl?: string; debugInfo?: unknown }> {
   try {
-    console.log('🔵 Uploading PDF to HubSpot...');
+    console.log('🔵 Uploading PDF to HubSpot API...');
+    console.log('🔵 API endpoint: /api/hubspot-upload');
+    console.log('🔵 File name:', `${fileName}.pdf`);
+    console.log('🔵 Contact email:', contactEmail);
+    console.log('🔵 Base64 data length:', base64Data.length);
+
+    const requestBody = {
+      fileData: base64Data,
+      fileName: `${fileName}.pdf`,
+      contactEmail,
+    };
+
+    console.log('🔵 Sending request...');
 
     const response = await fetch('/api/hubspot-upload', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        fileData: base64Data,
-        fileName: `${fileName}.pdf`,
-        contactEmail,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
-    const result = await response.json();
+    console.log('🔵 Response status:', response.status, response.statusText);
+
+    const responseText = await response.text();
+    console.log('🔵 Response body (raw):', responseText);
+
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      console.error('❌ Failed to parse response as JSON');
+      return {
+        success: false,
+        message: `Invalid JSON response: ${responseText.substring(0, 200)}`,
+      };
+    }
+
+    console.log('🔵 Response body (parsed):', result);
 
     if (response.ok && result.success) {
-      console.log('✅ PDF uploaded to HubSpot:', result);
+      console.log('✅ PDF uploaded to HubSpot successfully!');
       return {
         success: true,
         message: 'PDF uploaded successfully',
         fileUrl: result.fileUrl,
+        debugInfo: result,
       };
     } else {
       console.error('❌ HubSpot upload failed:', result);
       return {
         success: false,
-        message: result.error || 'Upload failed',
+        message: result.error || `Upload failed: ${response.status}`,
+        debugInfo: result,
       };
     }
   } catch (error) {
-    console.error('❌ HubSpot upload error:', error);
+    console.error('❌ HubSpot upload error (exception):', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Network error',
