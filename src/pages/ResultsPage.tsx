@@ -41,68 +41,36 @@ function ResultsPage() {
 
   // Auto-upload PDF to HubSpot when page loads
   useEffect(() => {
-    // Only run if we have results, user email, and haven't uploaded yet
     if (!result || !user?.email || hasUploadedPDF.current) {
-      console.log('🔵 PDF upload skipped:', {
-        hasResult: !!result,
-        hasEmail: !!user?.email,
-        alreadyUploaded: hasUploadedPDF.current,
-      });
       return;
     }
 
-    // Wait for the page to fully render before capturing
     const uploadPDF = async () => {
-      // Small delay to ensure the page is fully rendered
-      console.log('🔵 Waiting 1.5s for page to render...');
+      // Wait for page to fully render
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const pdfFileName = `EQUIP360-${user.firstName}-${user.lastName}-${new Date().toISOString().split('T')[0]}`;
 
-      console.log('🔵 Starting PDF generation for:', pdfFileName);
-      console.log('🔵 User email:', user.email);
-
       try {
         const pdfResult = await generateResultsPDF('results-pdf-content', pdfFileName);
 
-        console.log('🔵 PDF generation result:', {
-          success: pdfResult.success,
-          hasBlob: !!pdfResult.blob,
-          hasBase64: !!pdfResult.base64,
-          base64Length: pdfResult.base64?.length,
-          error: pdfResult.error,
-        });
-
         if (!pdfResult.success || !pdfResult.base64) {
-          console.error('❌ PDF generation failed:', pdfResult.error);
           return;
         }
 
-        console.log('🔵 PDF generated successfully');
-        console.log('🔵 Base64 data length:', pdfResult.base64.length);
-        console.log('🔵 Estimated PDF size (KB):', Math.round(pdfResult.base64.length * 0.75 / 1024));
-
-        // Check if PDF is too large for Vercel (limit ~4MB for request body)
-        const MAX_BASE64_SIZE = 3500000; // ~2.6MB actual file size
+        // Check if PDF is too large for Vercel
+        const MAX_BASE64_SIZE = 3500000;
         if (pdfResult.base64.length > MAX_BASE64_SIZE) {
-          console.warn('⚠️ PDF too large for upload:', pdfResult.base64.length, 'bytes (max:', MAX_BASE64_SIZE, ')');
-          console.warn('⚠️ Skipping HubSpot upload to avoid 413 error');
           return;
         }
 
-        console.log('🔵 Uploading to HubSpot...');
         const uploadResult = await uploadPDFToHubSpot(pdfResult.base64, pdfFileName, user.email);
 
-        console.log('🔵 HubSpot upload result:', uploadResult);
-
         if (uploadResult.success) {
-          console.log('✅ PDF automatically uploaded to HubSpot');
           hasUploadedPDF.current = true;
-        } else {
-          console.error('❌ HubSpot upload failed:', uploadResult.message);
         }
-      } catch (error) {
-        console.error('❌ Auto-upload error:', error);
+      } catch {
+        // Silent fail - PDF upload is a background operation
       }
     };
 

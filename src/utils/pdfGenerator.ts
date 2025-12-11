@@ -19,24 +19,20 @@ export interface PDFGenerationResult {
  */
 export async function generateResultsPDF(
   elementId: string = 'results-pdf-content',
-  fileName: string = 'EQUIP360-Results'
+  _fileName: string = 'EQUIP360-Results'
 ): Promise<PDFGenerationResult> {
   try {
     const element = document.getElementById(elementId);
 
     if (!element) {
-      console.error(`Element with ID "${elementId}" not found`);
       return {
         success: false,
         error: `Element with ID "${elementId}" not found`,
       };
     }
 
-    console.log(`🔵 Starting PDF generation for: ${fileName}`);
-
     // Apply PDF mode styling (white background, no gradients, compact)
     element.classList.add('pdf-mode');
-    console.log('🔵 Applied pdf-mode class for clean capture');
 
     // Small delay for styles to apply
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -45,21 +41,17 @@ export async function generateResultsPDF(
     let canvas;
     try {
       canvas = await html2canvas(element, {
-        scale: 1, // Minimum scale for smallest file size
+        scale: 1,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff', // White background for PDF
+        backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: 900, // Narrower width for smaller output
+        windowWidth: 900,
       });
     } finally {
       // Always remove PDF mode after capture (even on error)
       element.classList.remove('pdf-mode');
-      console.log('🔵 Removed pdf-mode class');
     }
-
-    console.log('🔵 Canvas captured, creating PDF...');
-    console.log('🔵 Canvas size:', canvas.width, 'x', canvas.height);
 
     // Calculate dimensions
     const imgWidth = 210; // A4 width in mm
@@ -74,9 +66,8 @@ export async function generateResultsPDF(
       compress: true,
     });
 
-    // Use JPEG with heavy compression for smaller file size
-    const imgData = canvas.toDataURL('image/jpeg', 0.4); // 40% quality JPEG for maximum compression
-    console.log('🔵 Image data length:', imgData.length);
+    // Use JPEG with compression for smaller file size
+    const imgData = canvas.toDataURL('image/jpeg', 0.4);
 
     // Add pages as needed
     let heightLeft = imgHeight;
@@ -94,20 +85,11 @@ export async function generateResultsPDF(
       heightLeft -= pageHeight;
     }
 
-    console.log('🔵 PDF created successfully');
-
     // Get blob for upload
     const blob = pdf.output('blob');
-    console.log('🔵 PDF blob size:', blob.size, 'bytes');
 
     // Get base64 for API transmission
     const base64 = pdf.output('datauristring').split(',')[1];
-    console.log('🔵 PDF base64 length:', base64.length);
-
-    // Check if PDF is too large (Vercel limit is ~4.5MB)
-    if (base64.length > 4000000) {
-      console.warn('⚠️ PDF is large, may hit upload limits');
-    }
 
     return {
       success: true,
@@ -115,7 +97,7 @@ export async function generateResultsPDF(
       base64,
     };
   } catch (error) {
-    console.error('❌ PDF generation error:', error);
+    console.error('PDF generation error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error during PDF generation',
@@ -137,7 +119,6 @@ export function downloadPDF(blob: Blob, fileName: string = 'EQUIP360-Results'): 
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-  console.log('✅ PDF downloaded:', `${fileName}.pdf`);
 }
 
 /**
@@ -151,66 +132,45 @@ export async function uploadPDFToHubSpot(
   base64Data: string,
   fileName: string,
   contactEmail: string
-): Promise<{ success: boolean; message: string; fileUrl?: string; debugInfo?: unknown }> {
+): Promise<{ success: boolean; message: string; fileUrl?: string }> {
   try {
-    console.log('🔵 Uploading PDF to HubSpot API...');
-    console.log('🔵 API endpoint: /api/hubspot-upload');
-    console.log('🔵 File name:', `${fileName}.pdf`);
-    console.log('🔵 Contact email:', contactEmail);
-    console.log('🔵 Base64 data length:', base64Data.length);
-
-    const requestBody = {
-      fileData: base64Data,
-      fileName: `${fileName}.pdf`,
-      contactEmail,
-    };
-
-    console.log('🔵 Sending request...');
-
     const response = await fetch('/api/hubspot-upload', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        fileData: base64Data,
+        fileName: `${fileName}.pdf`,
+        contactEmail,
+      }),
     });
 
-    console.log('🔵 Response status:', response.status, response.statusText);
-
     const responseText = await response.text();
-    console.log('🔵 Response body (raw):', responseText);
 
     let result;
     try {
       result = JSON.parse(responseText);
     } catch {
-      console.error('❌ Failed to parse response as JSON');
       return {
         success: false,
-        message: `Invalid JSON response: ${responseText.substring(0, 200)}`,
+        message: 'Invalid response from server',
       };
     }
 
-    console.log('🔵 Response body (parsed):', result);
-
     if (response.ok && result.success) {
-      console.log('✅ PDF uploaded to HubSpot successfully!');
       return {
         success: true,
         message: 'PDF uploaded successfully',
         fileUrl: result.fileUrl,
-        debugInfo: result,
       };
     } else {
-      console.error('❌ HubSpot upload failed:', result);
       return {
         success: false,
         message: result.error || `Upload failed: ${response.status}`,
-        debugInfo: result,
       };
     }
   } catch (error) {
-    console.error('❌ HubSpot upload error (exception):', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Network error',
