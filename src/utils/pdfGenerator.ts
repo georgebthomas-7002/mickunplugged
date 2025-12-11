@@ -36,12 +36,12 @@ export async function generateResultsPDF(
 
     // Capture the element as a canvas (reduced scale for smaller file size)
     const canvas = await html2canvas(element, {
-      scale: 1.5, // Reduced from 2 for smaller file size while maintaining quality
+      scale: 1, // Minimum scale for smallest file size
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#0a0a0a', // Match the dark background
       logging: false,
-      windowWidth: 1200, // Fixed width for consistent output
+      windowWidth: 900, // Narrower width for smaller output
     });
 
     console.log('🔵 Canvas captured, creating PDF...');
@@ -60,8 +60,8 @@ export async function generateResultsPDF(
       compress: true,
     });
 
-    // Use JPEG with compression instead of PNG for smaller file size
-    const imgData = canvas.toDataURL('image/jpeg', 0.7); // 70% quality JPEG
+    // Use JPEG with heavy compression for smaller file size
+    const imgData = canvas.toDataURL('image/jpeg', 0.5); // 50% quality JPEG
     console.log('🔵 Image data length:', imgData.length);
 
     // Add pages as needed
