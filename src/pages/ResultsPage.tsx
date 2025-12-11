@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAssessment } from '@/context';
 import {
@@ -19,7 +19,6 @@ import {
   getEQPillarInsight,
   getCultureDimensionInsight,
   generateResultsPDF,
-  downloadPDF,
   uploadPDFToHubSpot,
 } from '@/utils';
 import './ResultsPage.css';
@@ -29,13 +28,8 @@ function ResultsPage() {
   const { state } = useAssessment();
   const { result, user } = state;
 
-  // PDF generation state
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [isUploadingPDF, setIsUploadingPDF] = useState(false);
-  const [pdfStatus, setPdfStatus] = useState<{
-    type: 'success' | 'error' | null;
-    message: string;
-  }>({ type: null, message: '' });
+  // Track if we've already uploaded the PDF to prevent duplicates
+  const hasUploadedPDF = useRef(false);
 
   // Redirect if no result
   useEffect(() => {
@@ -43,6 +37,48 @@ function ResultsPage() {
       navigate('/');
     }
   }, [result, navigate]);
+
+  // Auto-upload PDF to HubSpot when page loads
+  useEffect(() => {
+    // Only run if we have results, user email, and haven't uploaded yet
+    if (!result || !user?.email || hasUploadedPDF.current) {
+      return;
+    }
+
+    // Wait for the page to fully render before capturing
+    const uploadPDF = async () => {
+      // Small delay to ensure the page is fully rendered
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const pdfFileName = `EQUIP360-${user.firstName}-${user.lastName}-${new Date().toISOString().split('T')[0]}`;
+
+      console.log('🔵 Auto-generating PDF for HubSpot upload...');
+
+      try {
+        const pdfResult = await generateResultsPDF('results-pdf-content', pdfFileName);
+
+        if (!pdfResult.success || !pdfResult.base64) {
+          console.error('❌ PDF generation failed:', pdfResult.error);
+          return;
+        }
+
+        console.log('🔵 PDF generated, uploading to HubSpot...');
+
+        const uploadResult = await uploadPDFToHubSpot(pdfResult.base64, pdfFileName, user.email);
+
+        if (uploadResult.success) {
+          console.log('✅ PDF automatically uploaded to HubSpot');
+          hasUploadedPDF.current = true;
+        } else {
+          console.error('❌ HubSpot upload failed:', uploadResult.message);
+        }
+      } catch (error) {
+        console.error('❌ Auto-upload error:', error);
+      }
+    };
+
+    uploadPDF();
+  }, [result, user]);
 
   if (!result) {
     return (
@@ -64,75 +100,6 @@ function ResultsPage() {
   const growthRecommendations = getGrowthRecommendations(scores, result.leadershipType, result.leadershipFamily);
   const moveTheStoolInsight = getMoveTheStoolInsight(scores, result.leadershipType);
   const becauseStatement = getBecauseStatementInsight(scores, result.leadershipType, result.leadershipFamily);
-
-  // Generate PDF filename
-  const pdfFileName = user
-    ? `EQUIP360-${user.firstName}-${user.lastName}-${new Date().toISOString().split('T')[0]}`
-    : `EQUIP360-Results-${new Date().toISOString().split('T')[0]}`;
-
-  // Handle PDF download
-  const handleDownloadPDF = async () => {
-    setIsGeneratingPDF(true);
-    setPdfStatus({ type: null, message: '' });
-
-    try {
-      const result = await generateResultsPDF('results-pdf-content', pdfFileName);
-
-      if (result.success && result.blob) {
-        downloadPDF(result.blob, pdfFileName);
-        setPdfStatus({ type: 'success', message: 'PDF downloaded successfully!' });
-      } else {
-        setPdfStatus({ type: 'error', message: result.error || 'Failed to generate PDF' });
-      }
-    } catch (error) {
-      setPdfStatus({
-        type: 'error',
-        message: error instanceof Error ? error.message : 'An error occurred',
-      });
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
-
-  // Handle PDF upload to HubSpot
-  const handleUploadToHubSpot = async () => {
-    if (!user?.email) {
-      setPdfStatus({ type: 'error', message: 'User email not found' });
-      return;
-    }
-
-    setIsUploadingPDF(true);
-    setPdfStatus({ type: null, message: '' });
-
-    try {
-      // Generate PDF first
-      const pdfResult = await generateResultsPDF('results-pdf-content', pdfFileName);
-
-      if (!pdfResult.success || !pdfResult.base64) {
-        setPdfStatus({ type: 'error', message: pdfResult.error || 'Failed to generate PDF' });
-        return;
-      }
-
-      // Upload to HubSpot
-      const uploadResult = await uploadPDFToHubSpot(pdfResult.base64, pdfFileName, user.email);
-
-      if (uploadResult.success) {
-        setPdfStatus({
-          type: 'success',
-          message: 'PDF uploaded to HubSpot successfully!',
-        });
-      } else {
-        setPdfStatus({ type: 'error', message: uploadResult.message });
-      }
-    } catch (error) {
-      setPdfStatus({
-        type: 'error',
-        message: error instanceof Error ? error.message : 'An error occurred',
-      });
-    } finally {
-      setIsUploadingPDF(false);
-    }
-  };
 
   return (
     <div className="results-page" id="results-pdf-content">
@@ -580,33 +547,10 @@ function ResultsPage() {
               <Link to="/" className="btn btn-primary">
                 Return Home
               </Link>
-              <button
-                className="btn btn-secondary"
-                onClick={handleDownloadPDF}
-                disabled={isGeneratingPDF}
-              >
-                {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF'}
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={handleUploadToHubSpot}
-                disabled={isUploadingPDF || isGeneratingPDF}
-              >
-                {isUploadingPDF ? 'Uploading...' : 'Save to My Profile'}
+              <button className="btn btn-secondary" onClick={() => window.print()}>
+                Print Results
               </button>
             </div>
-            {pdfStatus.type && (
-              <p
-                className="pdf-status"
-                style={{
-                  marginTop: '1rem',
-                  color: pdfStatus.type === 'success' ? '#4ade80' : '#f87171',
-                  fontSize: '0.875rem',
-                }}
-              >
-                {pdfStatus.message}
-              </p>
-            )}
           </div>
         </div>
       </section>
