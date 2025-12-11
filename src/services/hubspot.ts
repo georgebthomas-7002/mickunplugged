@@ -19,6 +19,12 @@ export interface HubSpotSubmissionResult {
   success: boolean;
   message: string;
   inlineMessage?: string;
+  debugInfo?: {
+    status?: number;
+    statusText?: string;
+    responseBody?: unknown;
+    error?: string;
+  };
 }
 
 /**
@@ -52,16 +58,19 @@ export async function submitToHubSpot(
       pageUri: window.location.href,
       pageName: 'E.Q.U.I.P. 360 Assessment - Start',
     },
-    // Optional: Add legal consent if needed
-    // legalConsentOptions: {
-    //   consent: {
-    //     consentToProcess: true,
-    //     text: 'I agree to allow E.Q.U.I.P. 360 to store and process my personal data.',
-    //   },
-    // },
   };
 
+  // DEBUG: Log what we're sending
+  console.group('🔵 HubSpot Form Submission Debug');
+  console.log('Portal ID:', HUBSPOT_PORTAL_ID);
+  console.log('Form GUID:', HUBSPOT_FORM_GUID);
+  console.log('API URL:', HUBSPOT_FORMS_API_URL);
+  console.log('Payload:', JSON.stringify(payload, null, 2));
+  console.groupEnd();
+
   try {
+    console.log('🔵 Sending request to HubSpot...');
+
     const response = await fetch(HUBSPOT_FORMS_API_URL, {
       method: 'POST',
       headers: {
@@ -70,30 +79,66 @@ export async function submitToHubSpot(
       body: JSON.stringify(payload),
     });
 
+    console.log('🔵 Response received:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+    });
+
+    // Try to get response body
+    const responseText = await response.text();
+    let responseBody: unknown;
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch {
+      responseBody = responseText;
+    }
+
+    console.log('🔵 Response body:', responseBody);
+
     if (response.ok) {
-      const result = await response.json();
+      console.log('✅ HubSpot submission SUCCESS');
       return {
         success: true,
         message: 'Form submitted successfully to HubSpot',
-        inlineMessage: result.inlineMessage,
+        inlineMessage: typeof responseBody === 'object' && responseBody !== null
+          ? (responseBody as Record<string, unknown>).inlineMessage as string | undefined
+          : undefined,
+        debugInfo: {
+          status: response.status,
+          statusText: response.statusText,
+          responseBody,
+        },
       };
     } else {
-      // Handle specific error codes
-      const errorData = await response.json().catch(() => ({}));
-      console.error('HubSpot submission failed:', response.status, errorData);
+      console.error('❌ HubSpot submission FAILED');
+      console.error('Status:', response.status, response.statusText);
+      console.error('Response:', responseBody);
 
       return {
         success: false,
-        message: `HubSpot submission failed: ${response.status}`,
+        message: `HubSpot submission failed: ${response.status} ${response.statusText}`,
+        debugInfo: {
+          status: response.status,
+          statusText: response.statusText,
+          responseBody,
+        },
       };
     }
   } catch (error) {
-    // Network or other errors - don't block the user flow
-    console.error('HubSpot submission error:', error);
+    // Network or other errors
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+    console.error('❌ HubSpot submission ERROR (network/fetch failed)');
+    console.error('Error:', error);
 
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Network error',
+      message: errorMessage,
+      debugInfo: {
+        error: errorMessage,
+      },
     };
   }
 }

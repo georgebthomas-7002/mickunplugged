@@ -37,12 +37,13 @@ function StartPage() {
       company: formData.company || undefined,
       jobTitle: formData.role || undefined,
     }).then((result) => {
+      console.log('🔵 HubSpot final result:', result);
       if (!result.success) {
         // Log error but don't block the user
-        console.warn('HubSpot submission failed:', result.message);
+        console.warn('HubSpot submission failed:', result.message, result.debugInfo);
         setHubspotError(result.message);
       } else {
-        console.log('HubSpot submission successful');
+        console.log('✅ HubSpot submission successful:', result.debugInfo);
       }
     });
 
