@@ -15,14 +15,11 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Check for access token
   if (!HUBSPOT_ACCESS_TOKEN) {
-    console.error('HUBSPOT_ACCESS_TOKEN not configured');
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
@@ -35,20 +32,15 @@ export default async function handler(
       });
     }
 
-    console.log(`Processing PDF upload for ${contactEmail}: ${fileName}`);
-
     // Step 1: Find the contact by email
     const contactId = await findContactByEmail(contactEmail);
 
     if (!contactId) {
-      console.log(`Contact not found for ${contactEmail}`);
       return res.status(404).json({
         success: false,
         error: 'Contact not found in HubSpot',
       });
     }
-
-    console.log(`Found contact ID: ${contactId}`);
 
     // Step 2: Upload file to HubSpot Files API
     const fileResult = await uploadFileToHubSpot(fileData, fileName);
@@ -59,8 +51,6 @@ export default async function handler(
         error: fileResult.error,
       });
     }
-
-    console.log(`File uploaded with ID: ${fileResult.fileId}`);
 
     // Step 3: Create an engagement (note) with the file attached to the contact
     const engagementResult = await createEngagementWithAttachment(
@@ -83,7 +73,6 @@ export default async function handler(
       fileId: fileResult.fileId,
     });
   } catch (error) {
-    console.error('HubSpot upload error:', error);
     return res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -121,7 +110,6 @@ async function findContactByEmail(email: string): Promise<string | null> {
     );
 
     if (!response.ok) {
-      console.error('Contact search failed:', await response.text());
       return null;
     }
 
@@ -132,8 +120,7 @@ async function findContactByEmail(email: string): Promise<string | null> {
     }
 
     return null;
-  } catch (error) {
-    console.error('Error finding contact:', error);
+  } catch {
     return null;
   }
 }
@@ -146,13 +133,8 @@ async function uploadFileToHubSpot(
   fileName: string
 ): Promise<{ success: boolean; fileId?: string; url?: string; error?: string }> {
   try {
-    // Convert base64 to buffer
     const buffer = Buffer.from(base64Data, 'base64');
-
-    // Create form data
     const formData = new FormData();
-
-    // Create a Blob from the buffer
     const blob = new Blob([buffer], { type: 'application/pdf' });
 
     formData.append('file', blob, fileName);
@@ -175,7 +157,6 @@ async function uploadFileToHubSpot(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('File upload failed:', response.status, errorText);
       return {
         success: false,
         error: `File upload failed: ${response.status} - ${errorText}`,
@@ -183,7 +164,6 @@ async function uploadFileToHubSpot(
     }
 
     const data = await response.json();
-    console.log('File uploaded:', data.id);
 
     return {
       success: true,
@@ -191,7 +171,6 @@ async function uploadFileToHubSpot(
       url: data.url,
     };
   } catch (error) {
-    console.error('Error uploading file:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -209,7 +188,6 @@ async function createEngagementWithAttachment(
   fileName: string
 ): Promise<boolean> {
   try {
-    // Use the Engagements v1 API for reliable file attachments
     const response = await fetch(
       'https://api.hubapi.com/engagements/v1/engagements',
       {
@@ -242,17 +220,8 @@ async function createEngagementWithAttachment(
       }
     );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Engagement creation failed:', response.status, errorText);
-      return false;
-    }
-
-    const data = await response.json();
-    console.log('Engagement created with ID:', data.engagement?.id);
-    return true;
-  } catch (error) {
-    console.error('Error creating engagement:', error);
+    return response.ok;
+  } catch {
     return false;
   }
 }
