@@ -77,9 +77,19 @@ function ResultsPage() {
           return;
         }
 
-        console.log('🔵 PDF generated successfully, uploading to HubSpot...');
+        console.log('🔵 PDF generated successfully');
         console.log('🔵 Base64 data length:', pdfResult.base64.length);
+        console.log('🔵 Estimated PDF size (KB):', Math.round(pdfResult.base64.length * 0.75 / 1024));
 
+        // Check if PDF is too large for Vercel (limit ~4MB for request body)
+        const MAX_BASE64_SIZE = 3500000; // ~2.6MB actual file size
+        if (pdfResult.base64.length > MAX_BASE64_SIZE) {
+          console.warn('⚠️ PDF too large for upload:', pdfResult.base64.length, 'bytes (max:', MAX_BASE64_SIZE, ')');
+          console.warn('⚠️ Skipping HubSpot upload to avoid 413 error');
+          return;
+        }
+
+        console.log('🔵 Uploading to HubSpot...');
         const uploadResult = await uploadPDFToHubSpot(pdfResult.base64, pdfFileName, user.email);
 
         console.log('🔵 HubSpot upload result:', uploadResult);

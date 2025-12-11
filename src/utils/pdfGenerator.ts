@@ -61,7 +61,7 @@ export async function generateResultsPDF(
     });
 
     // Use JPEG with heavy compression for smaller file size
-    const imgData = canvas.toDataURL('image/jpeg', 0.5); // 50% quality JPEG
+    const imgData = canvas.toDataURL('image/jpeg', 0.4); // 40% quality JPEG for maximum compression
     console.log('🔵 Image data length:', imgData.length);
 
     // Add pages as needed
