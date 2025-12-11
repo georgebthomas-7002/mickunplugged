@@ -540,7 +540,8 @@ export interface AssessmentResponse {
 export interface UserProfile {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   company?: string;
   role?: string;
   createdAt: Date;

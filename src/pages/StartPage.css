@@ -146,6 +146,18 @@
   gap: var(--spacing-xs);
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .form-group label {
   font-size: 0.75rem;
 }
