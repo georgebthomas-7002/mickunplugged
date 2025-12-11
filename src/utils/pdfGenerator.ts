@@ -34,15 +34,29 @@ export async function generateResultsPDF(
 
     console.log(`🔵 Starting PDF generation for: ${fileName}`);
 
-    // Capture the element as a canvas (reduced scale for smaller file size)
-    const canvas = await html2canvas(element, {
-      scale: 1, // Minimum scale for smallest file size
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#0a0a0a', // Match the dark background
-      logging: false,
-      windowWidth: 900, // Narrower width for smaller output
-    });
+    // Apply PDF mode styling (white background, no gradients, compact)
+    element.classList.add('pdf-mode');
+    console.log('🔵 Applied pdf-mode class for clean capture');
+
+    // Small delay for styles to apply
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Capture the element as a canvas
+    let canvas;
+    try {
+      canvas = await html2canvas(element, {
+        scale: 1, // Minimum scale for smallest file size
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff', // White background for PDF
+        logging: false,
+        windowWidth: 900, // Narrower width for smaller output
+      });
+    } finally {
+      // Always remove PDF mode after capture (even on error)
+      element.classList.remove('pdf-mode');
+      console.log('🔵 Removed pdf-mode class');
+    }
 
     console.log('🔵 Canvas captured, creating PDF...');
     console.log('🔵 Canvas size:', canvas.width, 'x', canvas.height);

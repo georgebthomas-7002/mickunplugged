@@ -22,6 +22,7 @@ import {
   uploadPDFToHubSpot,
 } from '@/utils';
 import './ResultsPage.css';
+import './ResultsPagePDF.css';
 
 function ResultsPage() {
   const navigate = useNavigate();
