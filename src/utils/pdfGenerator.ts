@@ -34,44 +34,49 @@ export async function generateResultsPDF(
 
     console.log(`🔵 Starting PDF generation for: ${fileName}`);
 
-    // Capture the element as a canvas
+    // Capture the element as a canvas (reduced scale for smaller file size)
     const canvas = await html2canvas(element, {
-      scale: 2, // Higher resolution
+      scale: 1, // Minimum scale for smallest file size
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#0a0a0a', // Match the dark background
       logging: false,
-      windowWidth: 1200, // Fixed width for consistent output
+      windowWidth: 900, // Narrower width for smaller output
     });
 
     console.log('🔵 Canvas captured, creating PDF...');
+    console.log('🔵 Canvas size:', canvas.width, 'x', canvas.height);
 
     // Calculate dimensions
     const imgWidth = 210; // A4 width in mm
     const pageHeight = 297; // A4 height in mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    // Create PDF
+    // Create PDF with compression
     const pdf = new jsPDF({
-      orientation: imgHeight > pageHeight ? 'portrait' : 'portrait',
+      orientation: 'portrait',
       unit: 'mm',
       format: 'a4',
+      compress: true,
     });
+
+    // Use JPEG with heavy compression for smaller file size
+    const imgData = canvas.toDataURL('image/jpeg', 0.4); // 40% quality JPEG for maximum compression
+    console.log('🔵 Image data length:', imgData.length);
 
     // Add pages as needed
     let heightLeft = imgHeight;
     let position = 0;
-    const imgData = canvas.toDataURL('image/png');
 
     // First page
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
     heightLeft -= pageHeight;
 
     // Additional pages if content is longer than one page
     while (heightLeft > 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pageHeight;
     }
 
@@ -79,9 +84,16 @@ export async function generateResultsPDF(
 
     // Get blob for upload
     const blob = pdf.output('blob');
+    console.log('🔵 PDF blob size:', blob.size, 'bytes');
 
     // Get base64 for API transmission
     const base64 = pdf.output('datauristring').split(',')[1];
+    console.log('🔵 PDF base64 length:', base64.length);
+
+    // Check if PDF is too large (Vercel limit is ~4.5MB)
+    if (base64.length > 4000000) {
+      console.warn('⚠️ PDF is large, may hit upload limits');
+    }
 
     return {
       success: true,
