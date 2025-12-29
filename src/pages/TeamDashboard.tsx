@@ -52,6 +52,7 @@ export default function TeamDashboard() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
+  const [copiedInviteId, setCopiedInviteId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'members' | 'insights'>('members');
 
   useEffect(() => {
@@ -319,6 +320,19 @@ export default function TeamDashboard() {
     }
   };
 
+  const handleCopyInviteLink = async (token: string, inviteId: string) => {
+    const appUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const inviteLink = `${appUrl}/invite/${token}`;
+
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setCopiedInviteId(inviteId);
+      setTimeout(() => setCopiedInviteId(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="team-dashboard">
@@ -444,13 +458,21 @@ export default function TeamDashboard() {
                       <span className="invite-date">
                         Sent {new Date(invite.created_at).toLocaleDateString()}
                       </span>
-                      <button
-                        className="btn btn-small btn-text-danger"
-                        onClick={() => handleRevokeInvite(invite.id)}
-                        disabled={revokingId === invite.id}
-                      >
-                        {revokingId === invite.id ? 'Revoking...' : 'Revoke'}
-                      </button>
+                      <div className="invite-actions">
+                        <button
+                          className="btn btn-small btn-text"
+                          onClick={() => handleCopyInviteLink(invite.token, invite.id)}
+                        >
+                          {copiedInviteId === invite.id ? 'Copied!' : 'Copy Link'}
+                        </button>
+                        <button
+                          className="btn btn-small btn-text-danger"
+                          onClick={() => handleRevokeInvite(invite.id)}
+                          disabled={revokingId === invite.id}
+                        >
+                          {revokingId === invite.id ? 'Revoking...' : 'Revoke'}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>

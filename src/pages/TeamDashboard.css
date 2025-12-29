@@ -230,6 +230,26 @@
   color: var(--color-gray-500);
 }
 
+.invite-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.btn-text:hover {
+  background: rgba(7, 145, 241, 0.1);
+}
+
 /* Empty Members */
 .empty-members {
   text-align: center;
