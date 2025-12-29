@@ -13,6 +13,8 @@ interface OrganizationWithCounts extends Organization {
   member_count?: number;
   completed_count?: number;
   pending_invites?: number;
+  is_owner?: boolean;
+  member_type?: 'team' | 'candidate';
 }
 
 export default function Dashboard() {
@@ -37,28 +39,56 @@ export default function Dashboard() {
     console.log('Fetching organizations for user:', user.id);
 
     try {
-      // Fetch organizations owned by this user
-      const { data: orgs, error: orgsError } = await supabase
-        .from('organizations')
-        .select('*')
-        .eq('owner_id', user.id)
-        .order('created_at', { ascending: false });
+      // Fetch organizations owned by this user AND organizations they're a member of
+      const [ownedOrgsResult, memberOrgsResult] = await Promise.all([
+        // Organizations user owns
+        supabase
+          .from('organizations')
+          .select('*')
+          .eq('owner_id', user.id)
+          .order('created_at', { ascending: false }),
+        // Organizations user is a member of (not owner)
+        supabase
+          .from('organization_members')
+          .select('organization_id, member_type, organization:organizations(*)')
+          .eq('user_id', user.id),
+      ]);
 
-      console.log('Organizations query result:', orgs?.length || 0, 'orgs, error:', orgsError?.message);
+      const ownedOrgs = ownedOrgsResult.data || [];
+      const memberOrgs = memberOrgsResult.data || [];
 
-      if (orgsError) {
-        console.error('Error fetching organizations:', orgsError);
-        setLoading(false);
-        return;
-      }
+      console.log('Owned orgs:', ownedOrgs.length, 'Member orgs:', memberOrgs.length);
+
+      // Combine owned and member orgs, marking ownership
+      const ownedOrgIds = new Set(ownedOrgs.map(o => o.id));
+
+      // Add owned orgs with is_owner flag
+      const allOrgs: OrganizationWithCounts[] = ownedOrgs.map(org => ({
+        ...org,
+        is_owner: true,
+      }));
+
+      // Add member orgs (excluding ones user owns)
+      memberOrgs.forEach((membership) => {
+        const org = membership.organization as unknown as Organization;
+        if (!ownedOrgIds.has(membership.organization_id) && org) {
+          allOrgs.push({
+            ...org,
+            is_owner: false,
+            member_type: membership.member_type as 'team' | 'candidate',
+          });
+        }
+      });
 
       // If no orgs, just set empty array and stop loading
-      if (!orgs || orgs.length === 0) {
+      if (allOrgs.length === 0) {
         console.log('No organizations found');
         setOrganizations([]);
         setLoading(false);
         return;
       }
+
+      const orgs = allOrgs;
 
       // Fetch all counts in parallel for better performance
       const orgIds = orgs.map(org => org.id);
@@ -192,7 +222,9 @@ export default function Dashboard() {
                   <Link to={`/team/${org.id}`} className="org-card-link">
                     <div className="org-card-header">
                       <h3>{org.name}</h3>
-                      <span className="org-badge">Owner</span>
+                      <span className={`org-badge ${org.is_owner ? 'owner' : org.member_type}`}>
+                        {org.is_owner ? 'Owner' : org.member_type === 'candidate' ? 'Candidate' : 'Member'}
+                      </span>
                     </div>
                     <div className="org-card-stats">
                       <div className="stat">
@@ -212,15 +244,23 @@ export default function Dashboard() {
                     </div>
                   </Link>
                   <div className="org-card-footer">
-                    <button
-                      className="btn btn-secondary btn-small"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setInviteOrg(org);
-                      }}
-                    >
-                      Invite Member
-                    </button>
+                    {org.is_owner ? (
+                      <button
+                        className="btn btn-secondary btn-small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setInviteOrg(org);
+                        }}
+                      >
+                        Invite Member
+                      </button>
+                    ) : org.member_type === 'candidate' ? (
+                      <Link to="/start" className="btn btn-primary btn-small">
+                        Take Assessment
+                      </Link>
+                    ) : (
+                      <span className="member-role">Team Member</span>
+                    )}
                     <Link to={`/team/${org.id}`} className="view-team">
                       View Team →
                     </Link>

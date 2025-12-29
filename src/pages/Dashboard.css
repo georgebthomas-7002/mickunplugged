@@ -148,14 +148,32 @@
 }
 
 .org-badge {
-  background: var(--color-gold-muted);
-  color: var(--color-gold);
   font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
+}
+
+.org-badge.owner {
+  background: var(--color-gold-muted, rgba(201, 162, 39, 0.15));
+  color: var(--color-gold);
+}
+
+.org-badge.team {
+  background: rgba(7, 145, 241, 0.15);
+  color: var(--color-primary);
+}
+
+.org-badge.candidate {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.member-role {
+  font-size: 0.75rem;
+  color: var(--color-gray-400);
 }
 
 .org-card-stats {
