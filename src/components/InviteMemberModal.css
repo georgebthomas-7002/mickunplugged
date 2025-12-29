@@ -98,6 +98,15 @@
   color: var(--color-white);
 }
 
+/* Share Link Label */
+.share-link-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: var(--spacing-sm);
+  text-align: left;
+}
+
 /* Invite Link Container */
 .invite-link-container {
   display: flex;

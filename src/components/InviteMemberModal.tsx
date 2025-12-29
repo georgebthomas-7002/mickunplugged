@@ -87,10 +87,11 @@ export default function InviteMemberModal({
               </p>
             ) : (
               <p className="success-message warning">
-                Email could not be sent automatically. Share the link below:
+                Email could not be sent. Copy and share the link below instead:
               </p>
             )}
 
+            <p className="share-link-label">Share this invite link:</p>
             <div className="invite-link-container">
               <input
                 type="text"
