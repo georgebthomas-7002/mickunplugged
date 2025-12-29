@@ -31,6 +31,31 @@
   padding-right: var(--spacing-xl);
 }
 
+/* Organization Context Banner */
+.org-context-banner {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: rgba(201, 162, 39, 0.1);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.org-context-label {
+  font-size: 0.6875rem;
+  color: var(--color-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.org-context-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-gold);
+}
+
 .start-info h1 {
   font-size: 2.5rem;
   margin-bottom: var(--spacing-lg);

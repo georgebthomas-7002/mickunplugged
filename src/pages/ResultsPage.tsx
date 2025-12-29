@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAssessment } from '@/context';
+import { useAuth } from '@/context/AuthContext';
 import {
   LEADERSHIP_FAMILIES,
   LEADERSHIP_TYPES,
@@ -21,6 +22,10 @@ import {
   generateResultsPDF,
   uploadPDFToHubSpot,
 } from '@/utils';
+import {
+  saveAssessment,
+  getOrganizationContext,
+} from '@/services/assessments';
 import './ResultsPage.css';
 import './ResultsPagePDF.css';
 
@@ -28,9 +33,12 @@ function ResultsPage() {
   const navigate = useNavigate();
   const { state } = useAssessment();
   const { result, user } = state;
+  const { user: authUser } = useAuth();
 
   // Track if we've already uploaded the PDF to prevent duplicates
   const hasUploadedPDF = useRef(false);
+  // Track if we've already saved to Supabase
+  const hasSavedToSupabase = useRef(false);
 
   // Redirect if no result
   useEffect(() => {
@@ -76,6 +84,33 @@ function ResultsPage() {
 
     uploadPDF();
   }, [result, user]);
+
+  // Save assessment to Supabase if user is authenticated
+  useEffect(() => {
+    if (!result || !authUser || hasSavedToSupabase.current) {
+      return;
+    }
+
+    const saveToSupabase = async () => {
+      const orgContext = getOrganizationContext();
+
+      const saveResult = await saveAssessment({
+        userId: authUser.id,
+        result,
+        organizationId: orgContext?.organizationId,
+        responses: state.session?.responses,
+      });
+
+      if (saveResult.success) {
+        hasSavedToSupabase.current = true;
+        console.log('Assessment saved to Supabase:', saveResult.assessmentId);
+      } else {
+        console.warn('Failed to save assessment:', saveResult.error);
+      }
+    };
+
+    saveToSupabase();
+  }, [result, authUser, state.session?.responses]);
 
   if (!result) {
     return (

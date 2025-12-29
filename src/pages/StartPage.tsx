@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAssessment } from '@/context';
 import { submitToHubSpot } from '@/services';
+import {
+  getOrganizationContext,
+  type OrganizationContext,
+} from '@/services/assessments';
 import './StartPage.css';
 
 function StartPage() {
@@ -18,6 +22,15 @@ function StartPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hubspotError, setHubspotError] = useState<string | null>(null);
+  const [orgContext, setOrgContext] = useState<OrganizationContext | null>(null);
+
+  // Check for organization context on mount
+  useEffect(() => {
+    const context = getOrganizationContext();
+    if (context) {
+      setOrgContext(context);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -68,6 +81,12 @@ function StartPage() {
       <div className="start-container">
         {/* Left Side - Info */}
         <div className="start-info">
+          {orgContext && (
+            <div className="org-context-banner">
+              <span className="org-context-label">Taking assessment for</span>
+              <span className="org-context-name">{orgContext.organizationName}</span>
+            </div>
+          )}
           <h1>Begin Your E.Q.U.I.P. 360 Assessment</h1>
           <div className="start-quote">
             <p className="text-accent">

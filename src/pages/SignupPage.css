@@ -1,0 +1,349 @@
+/* E.Q.U.I.P. 360 Signup Page Styles */
+
+.signup-page {
+  min-height: calc(100vh - 200px);
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  background: radial-gradient(
+    ellipse at center top,
+    var(--color-charcoal) 0%,
+    var(--color-black) 70%
+  );
+}
+
+.signup-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  align-items: start;
+}
+
+@media (max-width: 968px) {
+  .signup-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    max-width: 500px;
+  }
+}
+
+/* Left Side - Info */
+.signup-info {
+  padding-right: var(--spacing-xl);
+}
+
+.signup-info h1 {
+  font-size: 2.25rem;
+  margin-bottom: var(--spacing-md);
+  line-height: 1.2;
+}
+
+.signup-intro {
+  color: var(--color-gray-300);
+  font-size: 1.0625rem;
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
+}
+
+/* Note box for individual users */
+.signup-note-box {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.signup-note-box .note-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.signup-note-box strong {
+  color: var(--color-white);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.signup-note-box p {
+  color: var(--color-gray-300);
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.signup-note-box a {
+  color: var(--color-gold);
+  text-decoration: underline;
+}
+
+.signup-note-box a:hover {
+  color: var(--color-gold-light);
+}
+
+.signup-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.benefit-icon {
+  font-size: 1.5rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gold-muted);
+  border: 1px solid var(--color-gold-dark);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.benefit-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.benefit-item strong {
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.benefit-item span {
+  color: var(--color-gray-300);
+  font-size: 0.875rem;
+}
+
+/* Right Side - Form */
+.signup-form-container {
+  position: sticky;
+  top: 100px;
+}
+
+.signup-card {
+  background: linear-gradient(180deg, var(--color-black) 0%, var(--color-navy) 100%);
+  border: 1px solid var(--color-blue-dark);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.signup-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.form-subtitle {
+  color: var(--color-gray-300);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-xl);
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gray-200);
+}
+
+.form-error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: center;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: var(--spacing-sm);
+}
+
+.form-note {
+  color: var(--color-gray-400);
+  font-size: 0.8125rem;
+  margin: 0;
+  text-align: center;
+}
+
+.form-privacy {
+  text-align: center;
+  color: var(--color-gray-500);
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.signup-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-xl) 0;
+}
+
+.signup-divider::before,
+.signup-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-gray-700);
+}
+
+.signup-divider span {
+  color: var(--color-gray-400);
+  font-size: 0.8125rem;
+}
+
+.login-link {
+  width: 100%;
+  display: block;
+}
+
+/* Email Sent State */
+.signup-card .email-sent-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.signup-subtitle {
+  color: var(--color-gray-300);
+  font-size: 0.9375rem;
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.signup-subtitle strong {
+  color: var(--color-gold);
+}
+
+.signup-note {
+  color: var(--color-gray-400);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-gold);
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+  transition: color var(--transition-fast);
+}
+
+.link-button:hover {
+  color: var(--color-gold-light);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .signup-info {
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .signup-info h1 {
+    font-size: 1.75rem;
+  }
+
+  .signup-benefits {
+    gap: var(--spacing-sm);
+  }
+
+  .benefit-item {
+    text-align: left;
+  }
+
+  .signup-form-container {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .signup-page {
+    padding: var(--spacing-2xl) var(--spacing-sm);
+  }
+
+  .signup-info h1 {
+    font-size: 1.5rem;
+    text-wrap: balance;
+  }
+
+  .signup-intro {
+    font-size: 0.9375rem;
+    text-wrap: pretty;
+  }
+
+  .benefit-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  .benefit-item strong {
+    font-size: 0.9375rem;
+  }
+
+  .benefit-item span {
+    font-size: 0.8125rem;
+    text-wrap: pretty;
+  }
+
+  .signup-card {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .signup-card h2 {
+    font-size: 1.25rem;
+    text-wrap: balance;
+  }
+
+  .form-subtitle {
+    font-size: 0.8125rem;
+    text-wrap: pretty;
+  }
+
+  .form-group label {
+    font-size: 0.6875rem;
+  }
+
+  .form-privacy {
+    font-size: 0.6875rem;
+    text-wrap: pretty;
+  }
+}
