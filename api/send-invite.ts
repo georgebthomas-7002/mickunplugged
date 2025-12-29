@@ -45,7 +45,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'E.Q.U.I.P. 360 <noreply@equip360.io>',
+        // TODO: Change back to 'E.Q.U.I.P. 360 <noreply@equip360.io>' after domain verification
+        from: 'E.Q.U.I.P. 360 <onboarding@resend.dev>',
         to: [to],
         subject,
         html: emailHtml,
