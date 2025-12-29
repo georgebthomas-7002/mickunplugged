@@ -185,16 +185,14 @@ function SignupPage() {
                   type="text"
                   id="otp-code"
                   value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  placeholder="000000"
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Enter code"
                   required
                   autoFocus
-                  maxLength={6}
-                  pattern="\d{6}"
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   className="otp-input"
-                  style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5rem' }}
+                  style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.3rem' }}
                 />
               </div>
 
@@ -204,7 +202,7 @@ function SignupPage() {
               <button
                 type="submit"
                 className="btn btn-primary btn-large submit-btn"
-                disabled={isSubmitting || otpCode.length !== 6}
+                disabled={isSubmitting || otpCode.length < 6}
               >
                 {isSubmitting ? 'Creating Account...' : 'Complete Sign Up'}
               </button>
