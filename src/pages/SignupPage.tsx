@@ -102,6 +102,7 @@ function SignupPage() {
     }
 
     // Successfully verified - update profile with form data
+    // Set account_type: 'admin' if signing up directly, 'member' if via invite
     if (session.user) {
       try {
         await supabase
@@ -111,6 +112,7 @@ function SignupPage() {
             last_name: formData.lastName,
             company: formData.company || null,
             role: formData.role || null,
+            account_type: pendingInviteToken ? 'member' : 'admin',
             updated_at: new Date().toISOString(),
           })
           .eq('id', session.user.id);

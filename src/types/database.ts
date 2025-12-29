@@ -20,6 +20,7 @@ export interface Database {
           last_name: string | null;
           company: string | null;
           role: string | null;
+          account_type: 'admin' | 'member';
           created_at: string;
           updated_at: string;
         };
@@ -30,6 +31,7 @@ export interface Database {
           last_name?: string | null;
           company?: string | null;
           role?: string | null;
+          account_type?: 'admin' | 'member';
           created_at?: string;
           updated_at?: string;
         };
@@ -40,6 +42,7 @@ export interface Database {
           last_name?: string | null;
           company?: string | null;
           role?: string | null;
+          account_type?: 'admin' | 'member';
           created_at?: string;
           updated_at?: string;
         };
