@@ -9,10 +9,12 @@ import { revokeInvitation } from '@/services/invitations';
 import type { Organization, Profile, Assessment, Invitation } from '@/types/database';
 import {
   LEADERSHIP_FAMILIES,
+  LEADERSHIP_TYPES,
   EQ_PILLARS,
   BED_FACTORS,
   CULTURE_DIMENSIONS,
   type LeadershipFamilyCode,
+  type LeadershipTypeCode,
 } from '@/types/equip360';
 import './TeamDashboard.css';
 
@@ -25,16 +27,28 @@ interface MemberWithAssessment {
   assessment?: Assessment;
 }
 
+interface MetricInfo {
+  code: string;
+  name: string;
+  score: number;
+  percentage: number;
+  category: 'eq' | 'bed' | 'culture';
+}
+
 interface AggregatedMetrics {
   totalMembers: number;
   completedAssessments: number;
   pendingInvites: number;
   familyDistribution: Record<string, number>;
+  typeDistribution: Record<string, number>;
   averageScores: {
     eq: { SA: number; SR: number; M: number; E: number; SS: number };
     bed: { B: number; EX: number; D: number };
     culture: { T: number; PS: number; CQ: number; TS: number; ER: number };
   };
+  overallPercentage: number;
+  teamStrengths: MetricInfo[];
+  teamGrowthAreas: MetricInfo[];
 }
 
 export default function TeamDashboard() {
@@ -172,6 +186,7 @@ export default function TeamDashboard() {
     invites: Invitation[]
   ): AggregatedMetrics => {
     const familyDistribution: Record<string, number> = {};
+    const typeDistribution: Record<string, number> = {};
     const scoreAccumulator = {
       eq: { SA: 0, SR: 0, M: 0, E: 0, SS: 0 },
       bed: { B: 0, EX: 0, D: 0 },
@@ -183,6 +198,10 @@ export default function TeamDashboard() {
         // Count leadership families
         const family = m.assessment.leadership_family;
         familyDistribution[family] = (familyDistribution[family] || 0) + 1;
+
+        // Count leadership types
+        const type = m.assessment.leadership_type;
+        typeDistribution[type] = (typeDistribution[type] || 0) + 1;
 
         // Accumulate scores
         const scores = m.assessment.scores as number[];
@@ -227,12 +246,53 @@ export default function TeamDashboard() {
       },
     };
 
+    // Calculate overall percentage (average of all 13 metrics)
+    const totalScore = Object.values(averageScores.eq).reduce((a, b) => a + b, 0) +
+      Object.values(averageScores.bed).reduce((a, b) => a + b, 0) +
+      Object.values(averageScores.culture).reduce((a, b) => a + b, 0);
+    const maxPossible = 13 * 80; // 13 metrics, max 80 each
+    const overallPercentage = Math.round((totalScore / maxPossible) * 100);
+
+    // Build all metrics array for sorting
+    const allMetrics: MetricInfo[] = [
+      ...Object.entries(EQ_PILLARS).map(([code, pillar]) => ({
+        code,
+        name: pillar.name,
+        score: averageScores.eq[code as keyof typeof averageScores.eq],
+        percentage: Math.round((averageScores.eq[code as keyof typeof averageScores.eq] / 80) * 100),
+        category: 'eq' as const,
+      })),
+      ...Object.entries(BED_FACTORS).map(([code, factor]) => ({
+        code,
+        name: factor.name,
+        score: averageScores.bed[code as keyof typeof averageScores.bed],
+        percentage: Math.round((averageScores.bed[code as keyof typeof averageScores.bed] / 80) * 100),
+        category: 'bed' as const,
+      })),
+      ...Object.entries(CULTURE_DIMENSIONS).map(([code, dim]) => ({
+        code,
+        name: dim.name,
+        score: averageScores.culture[code as keyof typeof averageScores.culture],
+        percentage: Math.round((averageScores.culture[code as keyof typeof averageScores.culture] / 80) * 100),
+        category: 'culture' as const,
+      })),
+    ];
+
+    // Sort to find strengths (top 3) and growth areas (bottom 3)
+    const sortedMetrics = [...allMetrics].sort((a, b) => b.percentage - a.percentage);
+    const teamStrengths = sortedMetrics.slice(0, 3);
+    const teamGrowthAreas = sortedMetrics.slice(-3).reverse();
+
     return {
       totalMembers: allMembers.length,
       completedAssessments: withAssessments.length,
       pendingInvites: invites.length,
       familyDistribution,
+      typeDistribution,
       averageScores,
+      overallPercentage,
+      teamStrengths,
+      teamGrowthAreas,
     };
   };
 
@@ -551,6 +611,101 @@ export default function TeamDashboard() {
               </div>
             ) : (
               <>
+                {/* Team Overview */}
+                <div className="insight-card team-overview">
+                  <div className="overview-score">
+                    <div className="score-circle">
+                      <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" className="circle-bg" />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          className="circle-fill"
+                          style={{
+                            strokeDasharray: `${metrics.overallPercentage * 2.83} 283`,
+                          }}
+                        />
+                      </svg>
+                      <div className="score-text">
+                        <span className="score-number">{metrics.overallPercentage}%</span>
+                        <span className="score-label">Overall</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="overview-details">
+                    <h3>Team Performance Overview</h3>
+                    <p className="overview-description">
+                      Based on {metrics.completedAssessments} completed assessment{metrics.completedAssessments !== 1 ? 's' : ''}.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Team Strengths & Growth Areas */}
+                <div className="strengths-growth-container">
+                  <div className="insight-card strengths-card">
+                    <h3>Team Strengths</h3>
+                    <p className="card-subtitle">Top performing areas</p>
+                    <div className="metric-list">
+                      {metrics.teamStrengths.map((metric, idx) => (
+                        <div key={metric.code} className="metric-item strength">
+                          <span className="metric-rank">{idx + 1}</span>
+                          <div className="metric-details">
+                            <span className="metric-name">{metric.name}</span>
+                            <span className="metric-category">{metric.category.toUpperCase()}</span>
+                          </div>
+                          <span className="metric-percent">{metric.percentage}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="insight-card growth-card">
+                    <h3>Growth Opportunities</h3>
+                    <p className="card-subtitle">Areas for development</p>
+                    <div className="metric-list">
+                      {metrics.teamGrowthAreas.map((metric, idx) => (
+                        <div key={metric.code} className="metric-item growth">
+                          <span className="metric-rank">{idx + 1}</span>
+                          <div className="metric-details">
+                            <span className="metric-name">{metric.name}</span>
+                            <span className="metric-category">{metric.category.toUpperCase()}</span>
+                          </div>
+                          <span className="metric-percent">{metric.percentage}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Leadership Type Distribution */}
+                <div className="insight-card">
+                  <h3>Leadership Types on Your Team</h3>
+                  <div className="type-distribution">
+                    {Object.entries(metrics.typeDistribution).map(([typeCode, count]) => {
+                      const typeData = LEADERSHIP_TYPES[typeCode as LeadershipTypeCode];
+                      const familyCode = typeData?.family;
+                      const familyData = familyCode ? LEADERSHIP_FAMILIES[familyCode] : null;
+                      return (
+                        <div key={typeCode} className="type-item">
+                          <div
+                            className="type-badge"
+                            style={{ borderColor: familyData?.color || '#666' }}
+                          >
+                            <span className="type-name">{typeData?.name || typeCode}</span>
+                            <span
+                              className="type-family"
+                              style={{ color: familyData?.color || '#666' }}
+                            >
+                              {familyData?.name || 'Unknown'}
+                            </span>
+                          </div>
+                          <span className="type-count">{count} member{count !== 1 ? 's' : ''}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Leadership Family Distribution */}
                 <div className="insight-card">
                   <h3>Leadership Family Distribution</h3>

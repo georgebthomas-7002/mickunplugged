@@ -415,6 +415,200 @@
   color: var(--color-white);
 }
 
+/* Team Overview */
+.team-overview {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.overview-score {
+  flex-shrink: 0;
+}
+
+.score-circle {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.score-circle svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.score-circle .circle-bg {
+  fill: none;
+  stroke: var(--color-gray-800);
+  stroke-width: 8;
+}
+
+.score-circle .circle-fill {
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.score-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.score-number {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 0.75rem;
+  color: var(--color-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.overview-details h3 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.overview-description {
+  color: var(--color-gray-400);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Strengths & Growth Areas */
+.strengths-growth-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .strengths-growth-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-subtitle {
+  color: var(--color-gray-400);
+  font-size: 0.75rem;
+  margin: 0 0 var(--spacing-md);
+}
+
+.metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-black);
+  border-radius: var(--radius-md);
+  border-left: 3px solid transparent;
+}
+
+.metric-item.strength {
+  border-left-color: var(--color-success, #22c55e);
+}
+
+.metric-item.growth {
+  border-left-color: var(--color-gold);
+}
+
+.metric-rank {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-800);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-gray-300);
+}
+
+.metric-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.metric-category {
+  font-size: 0.625rem;
+  color: var(--color-gray-500);
+  letter-spacing: 0.05em;
+}
+
+.metric-percent {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+/* Leadership Type Distribution */
+.type-distribution {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.type-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.type-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-black);
+  border: 2px solid;
+  border-radius: var(--radius-md);
+  min-width: 140px;
+}
+
+.type-badge .type-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-white);
+  text-align: center;
+}
+
+.type-badge .type-family {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-count {
+  font-size: 0.75rem;
+  color: var(--color-gray-400);
+}
+
 /* Family Distribution */
 .family-distribution {
   display: flex;
