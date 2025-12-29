@@ -137,12 +137,24 @@ function SignupPage() {
       <div className="signup-container">
         {/* Left Side - Benefits */}
         <div className="signup-info">
-          <h1>Create Your Account</h1>
+          <h1>Create a Team Account</h1>
           <p className="signup-intro">
             {pendingInviteToken
               ? 'Create an account to join your team and take the assessment.'
-              : 'Unlock the full EQUIP 360 experience with a free account.'}
+              : 'Accounts are for team leaders who want to invite others and view aggregated insights.'}
           </p>
+
+          {!pendingInviteToken && (
+            <div className="signup-note-box">
+              <span className="note-icon">💡</span>
+              <div>
+                <strong>Just want to take the assessment?</strong>
+                <p>
+                  No account needed! <Link to="/start">Start your assessment</Link> right away—it's completely free.
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="signup-benefits">
             <div className="benefit-item">

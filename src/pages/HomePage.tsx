@@ -243,6 +243,23 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Team Section */}
+      <section className="team-section">
+        <div className="container-narrow">
+          <div className="team-card">
+            <div className="team-icon">👥</div>
+            <h3>Assessing Your Whole Team?</h3>
+            <p>
+              Create a free team account to invite your team, track completions,
+              and view aggregated leadership insights across your organization.
+            </p>
+            <Link to="/signup" className="btn btn-outline">
+              Create Team Account
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
