@@ -5,6 +5,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import InviteMemberModal from '@/components/InviteMemberModal';
+import { revokeInvitation } from '@/services/invitations';
 import type { Organization, Profile, Assessment, Invitation } from '@/types/database';
 import {
   LEADERSHIP_FAMILIES,
@@ -48,6 +49,9 @@ export default function TeamDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [revokingId, setRevokingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'members' | 'insights'>('members');
 
   useEffect(() => {
@@ -244,6 +248,77 @@ export default function TeamDashboard() {
     return 'emerging';
   };
 
+  const handleDeleteTeam = async () => {
+    if (!orgId || !organization) return;
+
+    setDeleting(true);
+    try {
+      // Delete the organization - RLS policies will handle cascading or we delete manually
+      // First delete invitations
+      await supabase
+        .from('invitations')
+        .delete()
+        .eq('organization_id', orgId);
+
+      // Delete organization members
+      await supabase
+        .from('organization_members')
+        .delete()
+        .eq('organization_id', orgId);
+
+      // Delete assessments for this org
+      await supabase
+        .from('assessments')
+        .delete()
+        .eq('organization_id', orgId);
+
+      // Finally delete the organization
+      const { error: deleteError } = await supabase
+        .from('organizations')
+        .delete()
+        .eq('id', orgId);
+
+      if (deleteError) {
+        console.error('Error deleting team:', deleteError);
+        alert('Failed to delete team. Please try again.');
+        setDeleting(false);
+        return;
+      }
+
+      // Navigate back to dashboard
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Error deleting team:', err);
+      alert('Failed to delete team. Please try again.');
+      setDeleting(false);
+    }
+  };
+
+  const handleRevokeInvite = async (inviteId: string) => {
+    setRevokingId(inviteId);
+    try {
+      const success = await revokeInvitation(inviteId);
+      if (success) {
+        // Remove from local state
+        setPendingInvites(prev => prev.filter(i => i.id !== inviteId));
+        // Update metrics
+        if (metrics) {
+          setMetrics({
+            ...metrics,
+            pendingInvites: metrics.pendingInvites - 1,
+          });
+        }
+      } else {
+        alert('Failed to revoke invitation. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error revoking invite:', err);
+      alert('Failed to revoke invitation. Please try again.');
+    } finally {
+      setRevokingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="team-dashboard">
@@ -298,6 +373,12 @@ export default function TeamDashboard() {
                   onClick={() => setShowInviteModal(true)}
                 >
                   + Invite Member
+                </button>
+                <button
+                  className="btn btn-outline btn-danger"
+                  onClick={() => setShowDeleteConfirm(true)}
+                >
+                  Delete Team
                 </button>
               </div>
             )}
@@ -363,6 +444,13 @@ export default function TeamDashboard() {
                       <span className="invite-date">
                         Sent {new Date(invite.created_at).toLocaleDateString()}
                       </span>
+                      <button
+                        className="btn btn-small btn-text-danger"
+                        onClick={() => handleRevokeInvite(invite.id)}
+                        disabled={revokingId === invite.id}
+                      >
+                        {revokingId === invite.id ? 'Revoking...' : 'Revoke'}
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -569,6 +657,43 @@ export default function TeamDashboard() {
           onClose={() => setShowInviteModal(false)}
           onInviteSent={() => fetchTeamData()}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="modal-backdrop" onClick={() => !deleting && setShowDeleteConfirm(false)}>
+          <div className="modal-content delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Delete Team?</h2>
+            <p className="delete-warning">
+              Are you sure you want to delete <strong>{organization?.name}</strong>?
+            </p>
+            <p className="delete-details">
+              This will permanently delete:
+            </p>
+            <ul className="delete-list">
+              <li>All team members ({metrics?.totalMembers || 0})</li>
+              <li>All assessments ({metrics?.completedAssessments || 0})</li>
+              <li>All pending invitations ({metrics?.pendingInvites || 0})</li>
+            </ul>
+            <p className="delete-irreversible">This action cannot be undone.</p>
+            <div className="modal-actions">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleDeleteTeam}
+                disabled={deleting}
+              >
+                {deleting ? 'Deleting...' : 'Delete Team'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

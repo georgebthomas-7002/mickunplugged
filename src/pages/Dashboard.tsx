@@ -60,46 +60,59 @@ export default function Dashboard() {
         return;
       }
 
-      // For each org, get member, assessment, and pending invite counts
-      const orgsWithCounts = await Promise.all(
-        orgs.map(async (org) => {
-          try {
-            // Get member count
-            const { count: memberCount } = await supabase
-              .from('organization_members')
-              .select('*', { count: 'exact', head: true })
-              .eq('organization_id', org.id);
+      // Fetch all counts in parallel for better performance
+      const orgIds = orgs.map(org => org.id);
 
-            // Get completed assessment count
-            const { count: completedCount } = await supabase
-              .from('assessments')
-              .select('*', { count: 'exact', head: true })
-              .eq('organization_id', org.id);
+      // Run all count queries in parallel
+      const [memberCounts, assessmentCounts, inviteCounts] = await Promise.all([
+        // Get member counts for all orgs at once
+        supabase
+          .from('organization_members')
+          .select('organization_id', { count: 'exact' })
+          .in('organization_id', orgIds),
+        // Get assessment counts for all orgs at once
+        supabase
+          .from('assessments')
+          .select('organization_id', { count: 'exact' })
+          .in('organization_id', orgIds),
+        // Get pending invite counts for all orgs at once
+        supabase
+          .from('invitations')
+          .select('organization_id', { count: 'exact' })
+          .in('organization_id', orgIds)
+          .eq('status', 'pending'),
+      ]);
 
-            // Get pending invites count
-            const { count: pendingCount } = await supabase
-              .from('invitations')
-              .select('*', { count: 'exact', head: true })
-              .eq('organization_id', org.id)
-              .eq('status', 'pending');
+      // Create count maps for O(1) lookup
+      const memberCountMap = new Map<string, number>();
+      const assessmentCountMap = new Map<string, number>();
+      const inviteCountMap = new Map<string, number>();
 
-            return {
-              ...org,
-              member_count: memberCount || 0,
-              completed_count: completedCount || 0,
-              pending_invites: pendingCount || 0,
-            };
-          } catch (err) {
-            console.error('Error fetching counts for org:', org.id, err);
-            return {
-              ...org,
-              member_count: 0,
-              completed_count: 0,
-              pending_invites: 0,
-            };
-          }
-        })
-      );
+      // Count members per org from raw data
+      (memberCounts.data || []).forEach((row: { organization_id: string }) => {
+        const orgId = row.organization_id;
+        memberCountMap.set(orgId, (memberCountMap.get(orgId) || 0) + 1);
+      });
+
+      // Count assessments per org from raw data
+      (assessmentCounts.data || []).forEach((row: { organization_id: string }) => {
+        const orgId = row.organization_id;
+        assessmentCountMap.set(orgId, (assessmentCountMap.get(orgId) || 0) + 1);
+      });
+
+      // Count invites per org from raw data
+      (inviteCounts.data || []).forEach((row: { organization_id: string }) => {
+        const orgId = row.organization_id;
+        inviteCountMap.set(orgId, (inviteCountMap.get(orgId) || 0) + 1);
+      });
+
+      // Merge counts with organizations
+      const orgsWithCounts = orgs.map((org) => ({
+        ...org,
+        member_count: memberCountMap.get(org.id) || 0,
+        completed_count: assessmentCountMap.get(org.id) || 0,
+        pending_invites: inviteCountMap.get(org.id) || 0,
+      }));
 
       console.log('Organizations with counts:', orgsWithCounts.length);
       setOrganizations(orgsWithCounts);
