@@ -22,6 +22,8 @@ interface AuthContextType {
   loading: boolean;
   isConfigured: boolean;
   signInWithMagicLink: (email: string) => Promise<{ error: Error | null }>;
+  signInWithOtp: (email: string) => Promise<{ error: Error | null }>;
+  verifyOtp: (email: string, token: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
@@ -128,6 +130,45 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [isConfigured]
   );
 
+  // Sign in with OTP code (sends 6-digit code instead of magic link)
+  // This is more reliable as email scanners can't "use up" the code
+  const signInWithOtp = useCallback(
+    async (email: string): Promise<{ error: Error | null }> => {
+      if (!isConfigured) {
+        return { error: new Error('Supabase is not configured') };
+      }
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          // Don't include emailRedirectTo - this tells Supabase to send OTP code
+          shouldCreateUser: true,
+        },
+      });
+
+      return { error: error ? new Error(error.message) : null };
+    },
+    [isConfigured]
+  );
+
+  // Verify OTP code
+  const verifyOtp = useCallback(
+    async (email: string, token: string): Promise<{ error: Error | null }> => {
+      if (!isConfigured) {
+        return { error: new Error('Supabase is not configured') };
+      }
+
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: 'email',
+      });
+
+      return { error: error ? new Error(error.message) : null };
+    },
+    [isConfigured]
+  );
+
   // Sign out
   const signOut = useCallback(async () => {
     if (!isConfigured) return;
@@ -179,6 +220,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loading,
     isConfigured,
     signInWithMagicLink,
+    signInWithOtp,
+    verifyOtp,
     signOut,
     updateProfile,
     refreshProfile,
