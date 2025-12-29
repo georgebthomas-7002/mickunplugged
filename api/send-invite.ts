@@ -45,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'E.Q.U.I.P. 360 <noreply@equip360.com>',
+        from: 'E.Q.U.I.P. 360 <noreply@equip360.io>',
         to: [to],
         subject,
         html: emailHtml,
