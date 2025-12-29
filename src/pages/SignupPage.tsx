@@ -1,13 +1,14 @@
-// Signup Page - Create Account with HubSpot Lead Capture + Magic Link Auth
+// Signup Page - Create Account with HubSpot Lead Capture + OTP Auth
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 import { submitToHubSpot } from '@/services';
 import './SignupPage.css';
 
 function SignupPage() {
   const navigate = useNavigate();
-  const { signInWithMagicLink, user, isConfigured } = useAuth();
+  const { sendOtpCode, verifyOtpCode, user, isConfigured } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -17,9 +18,11 @@ function SignupPage() {
     role: '',
   });
 
+  const [otpCode, setOtpCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Check for pending invite token
   const [pendingInviteToken] = useState(() =>
@@ -42,10 +45,11 @@ function SignupPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setSuccessMessage(null);
 
     // Store profile data for after email verification
     localStorage.setItem(
@@ -71,16 +75,76 @@ function SignupPage() {
       }
     });
 
-    // Send magic link via Supabase
-    const { error: signInError } = await signInWithMagicLink(formData.email);
+    // Send OTP code via Supabase
+    const { error: sendError } = await sendOtpCode(formData.email);
 
-    if (signInError) {
-      setError(signInError.message);
+    if (sendError) {
+      setError(sendError.message);
       setIsSubmitting(false);
       return;
     }
 
-    setEmailSent(true);
+    setCodeSent(true);
+    setIsSubmitting(false);
+  };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    const { error: verifyError, session } = await verifyOtpCode(formData.email, otpCode);
+
+    if (verifyError || !session) {
+      setError(verifyError?.message || 'Verification failed. Please try again.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Successfully verified - update profile with form data
+    if (session.user) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            company: formData.company || null,
+            role: formData.role || null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', session.user.id);
+
+        localStorage.removeItem('pending_profile_data');
+      } catch (e) {
+        console.error('Error updating profile:', e);
+      }
+    }
+
+    // Check for pending invite token
+    if (pendingInviteToken) {
+      navigate(`/invite/${pendingInviteToken}`, { replace: true });
+      return;
+    }
+
+    // Navigate to dashboard
+    navigate('/dashboard', { replace: true });
+  };
+
+  const handleResendCode = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    setOtpCode('');
+
+    const { error: sendError } = await sendOtpCode(formData.email);
+
+    if (sendError) {
+      setError(sendError.message);
+    } else {
+      setSuccessMessage('New code sent! Check your email.');
+      setTimeout(() => setSuccessMessage(null), 5000);
+    }
+
     setIsSubmitting(false);
   };
 
@@ -103,36 +167,74 @@ function SignupPage() {
     );
   }
 
-  if (emailSent) {
+  if (codeSent) {
     return (
       <div className="signup-page">
         <div className="signup-container">
-          <div className="signup-card" style={{ maxWidth: '540px', margin: '0 auto' }}>
-            <div className="email-sent-icon">✉️</div>
-            <h1>Check Your Email</h1>
+          <div className="signup-card" style={{ maxWidth: '480px', margin: '0 auto' }}>
+            <div className="email-sent-icon">🔐</div>
+            <h1>Enter Your Code</h1>
             <p className="signup-subtitle">
-              We sent a magic link to <strong>{formData.email}</strong>. Click the link to complete your account setup.
+              We sent a 6-digit code to <strong>{formData.email}</strong>
             </p>
-            <div className="email-tips">
-              <p className="tip-title">Important:</p>
-              <ul>
-                <li>Open the link in the <strong>same browser</strong> you're using now</li>
-                <li>If using Outlook or corporate email, try copying the link and pasting it in your browser</li>
-                <li>Check your spam folder if you don't see it</li>
-              </ul>
-            </div>
+
+            <form onSubmit={handleVerifyCode} className="signup-form">
+              <div className="form-group">
+                <label htmlFor="otp-code">Verification Code</label>
+                <input
+                  type="text"
+                  id="otp-code"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="000000"
+                  required
+                  autoFocus
+                  maxLength={6}
+                  pattern="\d{6}"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  className="otp-input"
+                  style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5rem' }}
+                />
+              </div>
+
+              {error && <p className="form-error">{error}</p>}
+              {successMessage && <p className="form-success">{successMessage}</p>}
+
+              <button
+                type="submit"
+                className="btn btn-primary btn-large submit-btn"
+                disabled={isSubmitting || otpCode.length !== 6}
+              >
+                {isSubmitting ? 'Creating Account...' : 'Complete Sign Up'}
+              </button>
+            </form>
+
             <p className="signup-note">
-              Didn't receive it?{' '}
+              Didn't receive the code? Check your spam folder or{' '}
               <button
                 type="button"
-                onClick={() => {
-                  setEmailSent(false);
-                }}
+                onClick={handleResendCode}
                 className="link-button"
+                disabled={isSubmitting}
               >
-                Try again
+                resend code
               </button>
+              .
             </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setCodeSent(false);
+                setOtpCode('');
+                setError(null);
+              }}
+              className="link-button"
+              style={{ marginTop: '1rem' }}
+            >
+              ← Back to form
+            </button>
           </div>
         </div>
       </div>
@@ -203,7 +305,7 @@ function SignupPage() {
               Your information is kept confidential and used only for your account.
             </p>
 
-            <form onSubmit={handleSubmit} className="signup-form">
+            <form onSubmit={handleSendCode} className="signup-form">
               <div className="form-group">
                 <label htmlFor="email">Email Address *</label>
                 <input
@@ -277,11 +379,11 @@ function SignupPage() {
                 className="btn btn-primary btn-large submit-btn"
                 disabled={isSubmitting || !formData.email || !formData.firstName || !formData.lastName}
               >
-                {isSubmitting ? 'Creating Account...' : 'Create Account'}
+                {isSubmitting ? 'Sending Code...' : 'Send Verification Code'}
               </button>
 
               <p className="form-note">
-                We'll send you a magic link to verify your email—no password needed.
+                We'll send you a 6-digit code to verify your email—no password needed.
               </p>
 
               <p className="form-privacy">

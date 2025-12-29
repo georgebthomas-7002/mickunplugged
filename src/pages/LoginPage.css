@@ -112,6 +112,13 @@
   text-align: center;
 }
 
+.form-success {
+  color: var(--color-success, #22c55e);
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: center;
+}
+
 .submit-btn {
   width: 100%;
 }

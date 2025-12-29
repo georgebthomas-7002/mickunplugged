@@ -1,40 +1,111 @@
-// Login Page - Magic Link Authentication
-import { useState } from 'react';
+// Login Page - OTP Code Authentication
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 import './LoginPage.css';
 
 function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signInWithMagicLink, user, isConfigured } = useAuth();
+  const { sendOtpCode, verifyOtpCode, user, isConfigured } = useAuth();
 
   const [email, setEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Redirect if already logged in
-  if (user) {
-    const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
-    navigate(from, { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [user, navigate, location.state]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setSuccessMessage(null);
 
-    const { error: signInError } = await signInWithMagicLink(email);
+    const { error: sendError } = await sendOtpCode(email);
 
-    if (signInError) {
-      setError(signInError.message);
+    if (sendError) {
+      setError(sendError.message);
       setIsSubmitting(false);
       return;
     }
 
-    setEmailSent(true);
+    setCodeSent(true);
+    setIsSubmitting(false);
+  };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    const { error: verifyError, session } = await verifyOtpCode(email, otpCode);
+
+    if (verifyError || !session) {
+      setError(verifyError?.message || 'Verification failed. Please try again.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Successfully verified - handle any pending profile data
+    const pendingProfileData = localStorage.getItem('pending_profile_data');
+    if (pendingProfileData && session.user) {
+      try {
+        const profileData = JSON.parse(pendingProfileData);
+        await supabase
+          .from('profiles')
+          .update({
+            first_name: profileData.firstName,
+            last_name: profileData.lastName,
+            company: profileData.company || null,
+            role: profileData.role || null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', session.user.id);
+
+        localStorage.removeItem('pending_profile_data');
+      } catch (e) {
+        console.error('Error updating profile:', e);
+        localStorage.removeItem('pending_profile_data');
+      }
+    }
+
+    // Check for pending invite token
+    const inviteToken = localStorage.getItem('pending_invite_token');
+    if (inviteToken) {
+      localStorage.removeItem('pending_invite_token');
+      navigate(`/invite/${inviteToken}`, { replace: true });
+      return;
+    }
+
+    // Navigate to dashboard
+    const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
+    navigate(from, { replace: true });
+  };
+
+  const handleResendCode = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    setOtpCode('');
+
+    const { error: sendError } = await sendOtpCode(email);
+
+    if (sendError) {
+      setError(sendError.message);
+    } else {
+      setSuccessMessage('New code sent! Check your email.');
+      setTimeout(() => setSuccessMessage(null), 5000);
+    }
+
     setIsSubmitting(false);
   };
 
@@ -57,37 +128,72 @@ function LoginPage() {
     );
   }
 
-  if (emailSent) {
+  if (codeSent) {
     return (
       <div className="login-page">
         <div className="login-container">
           <div className="login-card">
-            <div className="email-sent-icon">✉️</div>
-            <h1>Check Your Email</h1>
+            <div className="email-sent-icon">🔐</div>
+            <h1>Enter Your Code</h1>
             <p className="login-subtitle">
-              We sent a magic link to <strong>{email}</strong>. Click the link in the email to sign in.
+              We sent a 6-digit code to <strong>{email}</strong>
             </p>
-            <div className="email-tips">
-              <p className="tip-title">Important:</p>
-              <ul>
-                <li>Open the link in the <strong>same browser</strong> you're using now</li>
-                <li>If using Outlook or corporate email, try copying the link and pasting it in your browser</li>
-                <li>Check your spam folder if you don't see it</li>
-              </ul>
-            </div>
+
+            <form onSubmit={handleVerifyCode} className="login-form">
+              <div className="form-group">
+                <label htmlFor="otp-code">Verification Code</label>
+                <input
+                  type="text"
+                  id="otp-code"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="000000"
+                  required
+                  autoFocus
+                  maxLength={6}
+                  pattern="\d{6}"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  className="otp-input"
+                />
+              </div>
+
+              {error && <p className="form-error">{error}</p>}
+              {successMessage && <p className="form-success">{successMessage}</p>}
+
+              <button
+                type="submit"
+                className="btn btn-primary btn-large submit-btn"
+                disabled={isSubmitting || otpCode.length !== 6}
+              >
+                {isSubmitting ? 'Verifying...' : 'Sign In'}
+              </button>
+            </form>
+
             <p className="login-note">
-              Didn't receive it?{' '}
+              Didn't receive the code? Check your spam folder or{' '}
               <button
                 type="button"
-                onClick={() => {
-                  setEmailSent(false);
-                  setEmail('');
-                }}
+                onClick={handleResendCode}
                 className="link-button"
+                disabled={isSubmitting}
               >
-                Try again
+                resend code
               </button>
+              .
             </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setCodeSent(false);
+                setOtpCode('');
+                setError(null);
+              }}
+              className="link-button back-link"
+            >
+              ← Use a different email
+            </button>
           </div>
         </div>
       </div>
@@ -103,7 +209,7 @@ function LoginPage() {
             Sign in to access your dashboard and team insights.
           </p>
 
-          <form onSubmit={handleSubmit} className="login-form">
+          <form onSubmit={handleSendCode} className="login-form">
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
               <input
@@ -118,20 +224,18 @@ function LoginPage() {
               />
             </div>
 
-            {error && (
-              <p className="form-error">{error}</p>
-            )}
+            {error && <p className="form-error">{error}</p>}
 
             <button
               type="submit"
               className="btn btn-primary btn-large submit-btn"
               disabled={isSubmitting || !email}
             >
-              {isSubmitting ? 'Sending...' : 'Send Magic Link'}
+              {isSubmitting ? 'Sending...' : 'Send Verification Code'}
             </button>
 
             <p className="login-note">
-              We'll send you a secure link to sign in—no password needed.
+              We'll send you a 6-digit code to sign in—no password needed.
             </p>
           </form>
 

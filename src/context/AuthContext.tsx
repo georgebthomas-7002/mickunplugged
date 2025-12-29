@@ -21,9 +21,8 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   isConfigured: boolean;
-  signInWithMagicLink: (email: string) => Promise<{ error: Error | null }>;
-  signInWithOtp: (email: string) => Promise<{ error: Error | null }>;
-  verifyOtp: (email: string, token: string) => Promise<{ error: Error | null }>;
+  sendOtpCode: (email: string) => Promise<{ error: Error | null }>;
+  verifyOtpCode: (email: string, token: string) => Promise<{ error: Error | null; session: Session | null }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
@@ -96,6 +95,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -111,60 +111,86 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => subscription.unsubscribe();
   }, [isConfigured, fetchProfile]);
 
-  // Sign in with magic link (passwordless)
-  const signInWithMagicLink = useCallback(
+  // Send OTP code to email (no magic link, just a code)
+  const sendOtpCode = useCallback(
     async (email: string): Promise<{ error: Error | null }> => {
       if (!isConfigured) {
         return { error: new Error('Supabase is not configured') };
       }
 
+      console.log('Sending OTP to:', email);
+
+      // Call signInWithOtp WITHOUT emailRedirectTo to get OTP code instead of magic link
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      return { error: error ? new Error(error.message) : null };
-    },
-    [isConfigured]
-  );
-
-  // Sign in with OTP code (sends 6-digit code instead of magic link)
-  // This is more reliable as email scanners can't "use up" the code
-  const signInWithOtp = useCallback(
-    async (email: string): Promise<{ error: Error | null }> => {
-      if (!isConfigured) {
-        return { error: new Error('Supabase is not configured') };
-      }
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          // Don't include emailRedirectTo - this tells Supabase to send OTP code
           shouldCreateUser: true,
+          // NO emailRedirectTo - this is key for OTP mode
         },
       });
 
-      return { error: error ? new Error(error.message) : null };
+      if (error) {
+        console.error('Error sending OTP:', error);
+        return { error: new Error(error.message) };
+      }
+
+      console.log('OTP sent successfully');
+      return { error: null };
     },
     [isConfigured]
   );
 
-  // Verify OTP code
-  const verifyOtp = useCallback(
-    async (email: string, token: string): Promise<{ error: Error | null }> => {
+  // Verify OTP code - tries multiple token types for compatibility
+  const verifyOtpCode = useCallback(
+    async (email: string, token: string): Promise<{ error: Error | null; session: Session | null }> => {
       if (!isConfigured) {
-        return { error: new Error('Supabase is not configured') };
+        return { error: new Error('Supabase is not configured'), session: null };
       }
 
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'email',
-      });
+      console.log('Verifying OTP for:', email, 'token length:', token.length);
 
-      return { error: error ? new Error(error.message) : null };
+      // Clean the token - remove any spaces
+      const cleanToken = token.replace(/\s/g, '');
+
+      // Try verifying with different types - Supabase can be inconsistent
+      const typesToTry: Array<'email' | 'magiclink' | 'signup'> = ['email', 'magiclink', 'signup'];
+
+      for (const type of typesToTry) {
+        console.log('Trying verification with type:', type);
+
+        const { data, error } = await supabase.auth.verifyOtp({
+          email,
+          token: cleanToken,
+          type,
+        });
+
+        if (!error && data.session) {
+          console.log('Verification successful with type:', type);
+          return { error: null, session: data.session };
+        }
+
+        if (error) {
+          console.log('Verification failed with type:', type, error.message);
+          // If it's not a "wrong type" error, the token itself is invalid
+          if (!error.message.toLowerCase().includes('type')) {
+            // This is a real error (expired, invalid, etc.)
+            return {
+              error: new Error(
+                error.message.includes('expired') || error.message.includes('invalid')
+                  ? 'This code has expired or is invalid. Please request a new one.'
+                  : error.message
+              ),
+              session: null
+            };
+          }
+        }
+      }
+
+      // If all types failed
+      return {
+        error: new Error('Verification failed. Please request a new code and try again.'),
+        session: null
+      };
     },
     [isConfigured]
   );
@@ -178,8 +204,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('Error signing out:', error);
     }
 
-    // Clear any pending invite tokens
+    // Clear any pending data
     localStorage.removeItem('pending_invite_token');
+    localStorage.removeItem('pending_profile_data');
     localStorage.removeItem('assessment_org_id');
     localStorage.removeItem('assessment_member_type');
   }, [isConfigured]);
@@ -219,9 +246,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     profile,
     loading,
     isConfigured,
-    signInWithMagicLink,
-    signInWithOtp,
-    verifyOtp,
+    sendOtpCode,
+    verifyOtpCode,
     signOut,
     updateProfile,
     refreshProfile,
