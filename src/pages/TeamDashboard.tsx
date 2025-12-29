@@ -54,7 +54,7 @@ interface AggregatedMetrics {
 export default function TeamDashboard() {
   const { orgId } = useParams<{ orgId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile: authProfile } = useAuth();
 
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [members, setMembers] = useState<MemberWithAssessment[]>([]);
@@ -114,44 +114,69 @@ export default function TeamDashboard() {
 
       setOrganization(org as Organization);
 
-      // Fetch members with profiles
-      const { data: membersData, error: membersError } = await supabase
-        .from('organization_members')
-        .select(
-          `
-          id,
-          user_id,
-          member_type,
-          joined_at,
-          profile:profiles(*)
-        `
-        )
-        .eq('organization_id', orgId);
+      // Fetch members, profiles, and assessments in parallel for better performance
+      const [membersResult, assessmentsResult] = await Promise.all([
+        supabase
+          .from('organization_members')
+          .select('id, user_id, member_type, joined_at')
+          .eq('organization_id', orgId),
+        supabase
+          .from('assessments')
+          .select('*')
+          .eq('organization_id', orgId),
+      ]);
 
-      if (membersError) {
-        console.error('Error fetching members:', membersError);
+      const membersData = membersResult.data || [];
+      const assessmentsData = assessmentsResult.data || [];
+
+      console.log('TeamDashboard - Members fetched:', membersData.length, membersData);
+      console.log('TeamDashboard - Assessments fetched:', assessmentsData.length, assessmentsData);
+
+      if (membersResult.error) {
+        console.error('Error fetching members:', membersResult.error);
+      }
+      if (assessmentsResult.error) {
+        console.error('Error fetching assessments:', assessmentsResult.error);
       }
 
-      // Fetch assessments for this organization
-      const { data: assessmentsData } = await supabase
-        .from('assessments')
-        .select('*')
-        .eq('organization_id', orgId);
+      // Fetch profiles for all member user_ids
+      const userIds = membersData.map((m) => m.user_id);
+      let profilesMap = new Map<string, Profile>();
 
-      // Map assessments to members
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', userIds);
+
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+        }
+
+        (profilesData || []).forEach((p) => {
+          profilesMap.set(p.id, p as Profile);
+        });
+        console.log('TeamDashboard - Profiles fetched:', profilesData?.length || 0);
+      }
+
+      // Map assessments by user_id
       const assessmentsByUser = new Map<string, Assessment>();
-      (assessmentsData || []).forEach((a) => {
+      assessmentsData.forEach((a) => {
         assessmentsByUser.set(a.user_id, a as Assessment);
       });
 
-      const membersWithAssessments: MemberWithAssessment[] = (membersData || []).map((m) => ({
+      // Build members with assessments
+      const membersWithAssessments: MemberWithAssessment[] = membersData.map((m) => ({
         id: m.id,
         user_id: m.user_id,
         member_type: m.member_type as 'team' | 'candidate',
         joined_at: m.joined_at,
-        profile: m.profile as unknown as Profile,
+        profile: profilesMap.get(m.user_id) || ({} as Profile),
         assessment: assessmentsByUser.get(m.user_id),
       }));
+
+      console.log('TeamDashboard - Members with assessments:', membersWithAssessments.length);
+      console.log('TeamDashboard - Members with completed:', membersWithAssessments.filter(m => m.assessment).length);
 
       setMembers(membersWithAssessments);
 
@@ -423,7 +448,17 @@ export default function TeamDashboard() {
     return null;
   }
 
+  // Allow access to insights if user is owner OR has admin account type
   const isOwner = organization.owner_id === user?.id;
+  const canViewInsights = isOwner || authProfile?.account_type === 'admin';
+
+  console.log('TeamDashboard - Access check:', {
+    userId: user?.id,
+    ownerId: organization.owner_id,
+    isOwner,
+    accountType: authProfile?.account_type,
+    canViewInsights,
+  });
 
   return (
     <div className="team-dashboard">
@@ -492,7 +527,7 @@ export default function TeamDashboard() {
           >
             Team Members
           </button>
-          {isOwner && (
+          {canViewInsights && (
             <button
               className={`tab-btn ${activeTab === 'insights' ? 'active' : ''}`}
               onClick={() => setActiveTab('insights')}
@@ -504,7 +539,7 @@ export default function TeamDashboard() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'members' || !isOwner ? (
+        {activeTab === 'members' || !canViewInsights ? (
           <div className="members-section">
             {/* Pending Invitations */}
             {pendingInvites.length > 0 && isOwner && (
