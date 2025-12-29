@@ -32,6 +32,8 @@ export default function InviteAccept() {
           setError('This invitation has already been accepted');
         } else if (inv.status === 'expired') {
           setError('This invitation has expired');
+        } else if (!inv.organization) {
+          setError('Organization not found');
         } else {
           setInvitation(inv);
         }
