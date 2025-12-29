@@ -37,6 +37,7 @@ export function CreateOrganizationModal({ onClose, onCreated }: Props) {
         return;
       }
 
+      setLoading(false);
       onCreated();
     } catch (err) {
       console.error('Error:', err);
