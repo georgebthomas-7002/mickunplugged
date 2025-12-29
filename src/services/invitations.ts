@@ -218,6 +218,7 @@ export async function acceptInvitation(
       organization_id: invitation.organization_id,
       user_id: userId,
       member_type: invitation.member_type,
+      joined_at: new Date().toISOString(),
     });
 
   if (memberError) {

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAssessment } from '@/context';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 import {
   LEADERSHIP_FAMILIES,
   LEADERSHIP_TYPES,
@@ -92,18 +93,37 @@ function ResultsPage() {
     }
 
     const saveToSupabase = async () => {
-      const orgContext = getOrganizationContext();
+      // First try to get org context from localStorage (set during invite flow)
+      let organizationId = getOrganizationContext()?.organizationId;
+
+      console.log('Saving assessment - org context from localStorage:', organizationId);
+
+      // If no localStorage context, check if user is a member of an organization
+      if (!organizationId) {
+        console.log('No localStorage org context, checking organization_members...');
+        const { data: membership } = await supabase
+          .from('organization_members')
+          .select('organization_id')
+          .eq('user_id', authUser.id)
+          .limit(1)
+          .single();
+
+        if (membership) {
+          organizationId = membership.organization_id;
+          console.log('Found org from membership:', organizationId);
+        }
+      }
 
       const saveResult = await saveAssessment({
         userId: authUser.id,
         result,
-        organizationId: orgContext?.organizationId,
+        organizationId,
         responses: state.session?.responses,
       });
 
       if (saveResult.success) {
         hasSavedToSupabase.current = true;
-        console.log('Assessment saved to Supabase:', saveResult.assessmentId);
+        console.log('Assessment saved to Supabase:', saveResult.assessmentId, 'with org:', organizationId);
       } else {
         console.warn('Failed to save assessment:', saveResult.error);
       }
