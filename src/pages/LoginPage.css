@@ -43,6 +43,38 @@
   color: var(--color-gold);
 }
 
+.email-tips {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-gray-700);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+}
+
+.email-tips .tip-title {
+  color: var(--color-gold);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.875rem;
+}
+
+.email-tips ul {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  color: var(--color-gray-300);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.email-tips li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.email-tips strong {
+  color: var(--color-white);
+}
+
 .email-sent-icon {
   font-size: 3rem;
   margin-bottom: var(--spacing-lg);

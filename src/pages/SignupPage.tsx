@@ -1,4 +1,4 @@
-// Signup Page - Create Account with HubSpot Lead Capture + OTP Auth
+// Signup Page - Create Account with HubSpot Lead Capture + Magic Link Auth
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -7,7 +7,7 @@ import './SignupPage.css';
 
 function SignupPage() {
   const navigate = useNavigate();
-  const { signInWithOtp, verifyOtp, user, isConfigured } = useAuth();
+  const { signInWithMagicLink, user, isConfigured } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -17,9 +17,8 @@ function SignupPage() {
     role: '',
   });
 
-  const [otpCode, setOtpCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [codeSent, setCodeSent] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Check for pending invite token
@@ -43,7 +42,7 @@ function SignupPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSendCode = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -72,8 +71,8 @@ function SignupPage() {
       }
     });
 
-    // Send OTP code via Supabase
-    const { error: signInError } = await signInWithOtp(formData.email);
+    // Send magic link via Supabase
+    const { error: signInError } = await signInWithMagicLink(formData.email);
 
     if (signInError) {
       setError(signInError.message);
@@ -81,37 +80,7 @@ function SignupPage() {
       return;
     }
 
-    setCodeSent(true);
-    setIsSubmitting(false);
-  };
-
-  const handleVerifyCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    const { error: verifyError } = await verifyOtp(formData.email, otpCode);
-
-    if (verifyError) {
-      setError(verifyError.message);
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Success - will redirect via useEffect when user state updates
-  };
-
-  const handleResendCode = async () => {
-    setIsSubmitting(true);
-    setError(null);
-    setOtpCode('');
-
-    const { error: signInError } = await signInWithOtp(formData.email);
-
-    if (signInError) {
-      setError(signInError.message);
-    }
-
+    setEmailSent(true);
     setIsSubmitting(false);
   };
 
@@ -134,73 +103,36 @@ function SignupPage() {
     );
   }
 
-  if (codeSent) {
+  if (emailSent) {
     return (
       <div className="signup-page">
         <div className="signup-container">
-          <div className="signup-card" style={{ maxWidth: '480px', margin: '0 auto' }}>
-            <div className="email-sent-icon">🔐</div>
-            <h1>Enter Your Code</h1>
+          <div className="signup-card" style={{ maxWidth: '540px', margin: '0 auto' }}>
+            <div className="email-sent-icon">✉️</div>
+            <h1>Check Your Email</h1>
             <p className="signup-subtitle">
-              We sent a 6-digit code to <strong>{formData.email}</strong>
+              We sent a magic link to <strong>{formData.email}</strong>. Click the link to complete your account setup.
             </p>
-
-            <form onSubmit={handleVerifyCode} className="signup-form">
-              <div className="form-group">
-                <label htmlFor="otp-code">Verification Code</label>
-                <input
-                  type="text"
-                  id="otp-code"
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  placeholder="000000"
-                  required
-                  autoFocus
-                  maxLength={6}
-                  pattern="\d{6}"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  className="otp-input"
-                  style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5rem' }}
-                />
-              </div>
-
-              {error && <p className="form-error">{error}</p>}
-
-              <button
-                type="submit"
-                className="btn btn-primary btn-large submit-btn"
-                disabled={isSubmitting || otpCode.length !== 6}
-              >
-                {isSubmitting ? 'Creating Account...' : 'Complete Sign Up'}
-              </button>
-            </form>
-
+            <div className="email-tips">
+              <p className="tip-title">Important:</p>
+              <ul>
+                <li>Open the link in the <strong>same browser</strong> you're using now</li>
+                <li>If using Outlook or corporate email, try copying the link and pasting it in your browser</li>
+                <li>Check your spam folder if you don't see it</li>
+              </ul>
+            </div>
             <p className="signup-note">
-              Didn't receive the code? Check your spam folder or{' '}
+              Didn't receive it?{' '}
               <button
                 type="button"
-                onClick={handleResendCode}
+                onClick={() => {
+                  setEmailSent(false);
+                }}
                 className="link-button"
-                disabled={isSubmitting}
               >
-                resend code
+                Try again
               </button>
-              .
             </p>
-
-            <button
-              type="button"
-              onClick={() => {
-                setCodeSent(false);
-                setOtpCode('');
-                setError(null);
-              }}
-              className="link-button"
-              style={{ marginTop: '1rem' }}
-            >
-              ← Back to form
-            </button>
           </div>
         </div>
       </div>
@@ -271,7 +203,7 @@ function SignupPage() {
               Your information is kept confidential and used only for your account.
             </p>
 
-            <form onSubmit={handleSendCode} className="signup-form">
+            <form onSubmit={handleSubmit} className="signup-form">
               <div className="form-group">
                 <label htmlFor="email">Email Address *</label>
                 <input
@@ -345,11 +277,11 @@ function SignupPage() {
                 className="btn btn-primary btn-large submit-btn"
                 disabled={isSubmitting || !formData.email || !formData.firstName || !formData.lastName}
               >
-                {isSubmitting ? 'Sending Code...' : 'Send Verification Code'}
+                {isSubmitting ? 'Creating Account...' : 'Create Account'}
               </button>
 
               <p className="form-note">
-                We'll send you a 6-digit code to verify your email—no password needed.
+                We'll send you a magic link to verify your email—no password needed.
               </p>
 
               <p className="form-privacy">
