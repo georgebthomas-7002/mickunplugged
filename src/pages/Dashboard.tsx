@@ -5,21 +5,22 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { CreateOrganizationModal } from '@/components/CreateOrganizationModal';
+import InviteMemberModal from '@/components/InviteMemberModal';
+import type { Organization } from '@/types/database';
 import './Dashboard.css';
 
-interface Organization {
-  id: string;
-  name: string;
-  created_at: string;
+interface OrganizationWithCounts extends Organization {
   member_count?: number;
   completed_count?: number;
+  pending_invites?: number;
 }
 
 export default function Dashboard() {
   const { user, profile, signOut } = useAuth();
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizations, setOrganizations] = useState<OrganizationWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [inviteOrg, setInviteOrg] = useState<Organization | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -44,7 +45,7 @@ export default function Dashboard() {
         return;
       }
 
-      // For each org, get member and assessment counts
+      // For each org, get member, assessment, and pending invite counts
       const orgsWithCounts = await Promise.all(
         (orgs || []).map(async (org) => {
           // Get member count
@@ -59,10 +60,18 @@ export default function Dashboard() {
             .select('*', { count: 'exact', head: true })
             .eq('organization_id', org.id);
 
+          // Get pending invites count
+          const { count: pendingCount } = await supabase
+            .from('invitations')
+            .select('*', { count: 'exact', head: true })
+            .eq('organization_id', org.id)
+            .eq('status', 'pending');
+
           return {
             ...org,
             member_count: memberCount || 0,
             completed_count: completedCount || 0,
+            pending_invites: pendingCount || 0,
           };
         })
       );
@@ -140,29 +149,44 @@ export default function Dashboard() {
             {/* Organizations Grid */}
             <div className="organizations-grid">
               {organizations.map((org) => (
-                <Link
-                  key={org.id}
-                  to={`/team/${org.id}`}
-                  className="organization-card"
-                >
-                  <div className="org-card-header">
-                    <h3>{org.name}</h3>
-                    <span className="org-badge">Owner</span>
-                  </div>
-                  <div className="org-card-stats">
-                    <div className="stat">
-                      <span className="stat-value">{org.member_count}</span>
-                      <span className="stat-label">Members</span>
+                <div key={org.id} className="organization-card">
+                  <Link to={`/team/${org.id}`} className="org-card-link">
+                    <div className="org-card-header">
+                      <h3>{org.name}</h3>
+                      <span className="org-badge">Owner</span>
                     </div>
-                    <div className="stat">
-                      <span className="stat-value">{org.completed_count}</span>
-                      <span className="stat-label">Completed</span>
+                    <div className="org-card-stats">
+                      <div className="stat">
+                        <span className="stat-value">{org.member_count}</span>
+                        <span className="stat-label">Members</span>
+                      </div>
+                      <div className="stat">
+                        <span className="stat-value">{org.completed_count}</span>
+                        <span className="stat-label">Completed</span>
+                      </div>
+                      {(org.pending_invites ?? 0) > 0 && (
+                        <div className="stat pending">
+                          <span className="stat-value">{org.pending_invites}</span>
+                          <span className="stat-label">Pending</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </Link>
                   <div className="org-card-footer">
-                    <span className="view-team">View Team →</span>
+                    <button
+                      className="btn btn-secondary btn-small"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setInviteOrg(org);
+                      }}
+                    >
+                      Invite Member
+                    </button>
+                    <Link to={`/team/${org.id}`} className="view-team">
+                      View Team →
+                    </Link>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </>
@@ -189,6 +213,15 @@ export default function Dashboard() {
         <CreateOrganizationModal
           onClose={() => setShowCreateModal(false)}
           onCreated={handleOrganizationCreated}
+        />
+      )}
+
+      {/* Invite Member Modal */}
+      {inviteOrg && (
+        <InviteMemberModal
+          organization={inviteOrg}
+          onClose={() => setInviteOrg(null)}
+          onInviteSent={() => fetchOrganizations()}
         />
       )}
     </div>

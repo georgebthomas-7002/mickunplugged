@@ -1,0 +1,182 @@
+/* Invite Accept Page Styles */
+
+.invite-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+.invite-container {
+  max-width: 520px;
+  width: 100%;
+}
+
+.invite-card {
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
+  border: 1px solid var(--color-gray-700);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.invite-card.error {
+  border-color: var(--color-error, #ef4444);
+}
+
+/* Badge */
+.invite-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: rgba(201, 162, 39, 0.15);
+  color: var(--color-gold);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Headings */
+.invite-card h1 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-white);
+}
+
+.invite-org {
+  font-size: 1.125rem;
+  color: var(--color-gray-300);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-xl);
+}
+
+.invite-org strong {
+  color: var(--color-gold);
+}
+
+/* Assessment Details */
+.invite-details {
+  background: var(--color-black);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  text-align: left;
+}
+
+.invite-details h3 {
+  font-size: 1rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-white);
+}
+
+.invite-details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.invite-details li {
+  padding: var(--spacing-xs) 0;
+  padding-left: var(--spacing-lg);
+  position: relative;
+  color: var(--color-gray-300);
+  font-size: 0.9375rem;
+}
+
+.invite-details li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-success, #22c55e);
+}
+
+/* Actions */
+.invite-actions {
+  margin-top: var(--spacing-xl);
+}
+
+.btn-lg {
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: 1.0625rem;
+}
+
+.logged-in-as {
+  margin-top: var(--spacing-md);
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+}
+
+.logged-in-as strong {
+  color: var(--color-gray-200);
+}
+
+.auth-prompt {
+  color: var(--color-gray-300);
+  margin-bottom: var(--spacing-lg);
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Error Icon */
+.error-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--spacing-lg);
+  background: var(--color-error, #ef4444);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* Loading */
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--color-gray-700);
+  border-top-color: var(--color-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--spacing-lg);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .invite-page {
+    padding: var(--spacing-md);
+    align-items: flex-start;
+    padding-top: var(--spacing-2xl);
+  }
+
+  .invite-card {
+    padding: var(--spacing-xl);
+  }
+
+  .invite-card h1 {
+    font-size: 1.5rem;
+  }
+
+  .invite-org {
+    font-size: 1rem;
+  }
+
+  .btn-lg {
+    width: 100%;
+  }
+}

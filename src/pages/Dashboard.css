@@ -112,17 +112,26 @@
   background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-navy) 100%);
   border: 1px solid var(--color-gray-700);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
   text-decoration: none;
   transition: all var(--transition-base);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .organization-card:hover {
   border-color: var(--color-gold);
   transform: translateY(-4px);
   box-shadow: var(--shadow-gold);
+}
+
+.org-card-link {
+  padding: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .org-card-header {
@@ -176,15 +185,33 @@
   margin-top: var(--spacing-xs);
 }
 
+.stat.pending .stat-value {
+  color: var(--color-gold);
+}
+
+.stat.pending .stat-label {
+  color: var(--color-gold);
+  opacity: 0.8;
+}
+
 .org-card-footer {
-  padding-top: var(--spacing-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-xl);
   border-top: 1px solid var(--color-gray-700);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .view-team {
   color: var(--color-gold);
   font-size: 0.875rem;
   font-weight: 500;
+  text-decoration: none;
+}
+
+.view-team:hover {
+  text-decoration: underline;
 }
 
 /* Quick Links */

@@ -9,6 +9,7 @@ import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
+import InviteAccept from '@/pages/InviteAccept';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 function App() {
@@ -31,8 +32,9 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         {/* TODO Phase 4: Team Dashboard */}
         {/* <Route path="/team/:orgId" element={<ProtectedRoute><TeamDashboard /></ProtectedRoute>} /> */}
-        {/* TODO Phase 3: Invitation acceptance */}
-        {/* <Route path="/invite/:token" element={<InviteAccept />} /> */}
+
+        {/* Invitation acceptance (public - handles auth internally) */}
+        <Route path="/invite/:token" element={<InviteAccept />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
