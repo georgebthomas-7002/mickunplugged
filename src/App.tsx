@@ -11,6 +11,7 @@ import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
 import TeamDashboard from '@/pages/TeamDashboard';
 import InviteAccept from '@/pages/InviteAccept';
+import UpgradePage from '@/pages/UpgradePage';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         {/* Protected routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/team/:orgId" element={<ProtectedRoute><TeamDashboard /></ProtectedRoute>} />
+        <Route path="/upgrade" element={<ProtectedRoute><UpgradePage /></ProtectedRoute>} />
 
         {/* Invitation acceptance (public - handles auth internally) */}
         <Route path="/invite/:token" element={<InviteAccept />} />

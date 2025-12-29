@@ -112,6 +112,30 @@
   line-height: 1.6;
 }
 
+.upgrade-prompt {
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-gray-800);
+}
+
+.upgrade-prompt p {
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.875rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-gold);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.link-button:hover {
+  color: var(--color-white);
+}
+
 /* Actions Bar */
 .dashboard-actions {
   display: flex;

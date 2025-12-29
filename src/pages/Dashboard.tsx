@@ -196,29 +196,58 @@ export default function Dashboard() {
         {/* Empty State */}
         {organizations.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">👥</div>
-            <h2>Create Your First Team</h2>
-            <p>
-              Get started by creating a team. You'll be able to invite members,
-              track assessments, and view aggregated leadership insights.
-            </p>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="btn btn-primary"
-            >
-              Create Your First Team
-            </button>
+            {profile?.account_type === 'admin' ? (
+              <>
+                <div className="empty-state-icon">👥</div>
+                <h2>Create Your First Team</h2>
+                <p>
+                  Get started by creating a team. You'll be able to invite members,
+                  track assessments, and view aggregated leadership insights.
+                </p>
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="btn btn-primary"
+                >
+                  Create Your First Team
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="empty-state-icon">📝</div>
+                <h2>Welcome to E.Q.U.I.P. 360</h2>
+                <p>
+                  You're set up as a team member. Take the leadership assessment
+                  to discover your Leadership Identity and contribute to your team's insights.
+                </p>
+                <Link to="/start" className="btn btn-primary">
+                  Take Your Assessment
+                </Link>
+                <div className="upgrade-prompt">
+                  <p>Want to create your own team?</p>
+                  <Link to="/upgrade" className="link-button">
+                    Upgrade to Admin Account
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <>
             {/* Actions Bar */}
             <div className="dashboard-actions">
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="btn btn-primary"
-              >
-                + New Team
-              </button>
+              {profile?.account_type === 'admin' && (
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="btn btn-primary"
+                >
+                  + New Team
+                </button>
+              )}
+              {profile?.account_type === 'member' && (
+                <Link to="/start" className="btn btn-primary">
+                  Take Assessment
+                </Link>
+              )}
             </div>
 
             {/* Organizations Grid */}
