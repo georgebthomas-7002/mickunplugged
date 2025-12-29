@@ -181,6 +181,12 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="header-right">
+            <div className="user-info">
+              <span className="user-email">{user?.email}</span>
+              {profile?.first_name && profile?.last_name && (
+                <span className="user-name">{profile.first_name} {profile.last_name}</span>
+              )}
+            </div>
             <button onClick={signOut} className="btn btn-outline btn-small">
               Sign Out
             </button>
