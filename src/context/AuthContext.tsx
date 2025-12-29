@@ -53,18 +53,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const fetchProfile = useCallback(async (userId: string) => {
     if (!isConfigured) return;
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    try {
+      console.log('Fetching profile for user:', userId);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-    if (error) {
-      console.error('Error fetching profile:', error);
-      return;
+      if (error) {
+        // Profile might not exist yet for new users - that's ok
+        console.log('Profile fetch result:', error.code === 'PGRST116' ? 'No profile yet' : error.message);
+        return;
+      }
+
+      console.log('Profile loaded:', data?.email || data?.first_name);
+      setProfile(data);
+    } catch (err) {
+      console.error('Unexpected error fetching profile:', err);
     }
-
-    setProfile(data);
   }, [isConfigured]);
 
   // Refresh profile data
@@ -99,13 +106,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setSession(session);
       setUser(session?.user ?? null);
 
+      // Set loading false FIRST, then fetch profile in background
+      // This prevents the UI from getting stuck
+      setLoading(false);
+
       if (event === 'SIGNED_IN' && session?.user) {
-        await fetchProfile(session.user.id);
+        // Fetch profile in background - don't block the UI
+        fetchProfile(session.user.id).catch((err) => {
+          console.error('Error fetching profile after sign in:', err);
+        });
       } else if (event === 'SIGNED_OUT') {
         setProfile(null);
       }
-
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
