@@ -1,6 +1,6 @@
 // Auth Callback Page
 // Handles the redirect from magic link email
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import './AuthCallback.css';
@@ -10,9 +10,19 @@ export default function AuthCallback() {
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState('Verifying your email...');
+  const hasRun = useRef(false);
 
   useEffect(() => {
+    // Prevent double-execution in React StrictMode
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     const handleCallback = async () => {
+      // Set a timeout to prevent infinite spinning
+      const timeoutId = setTimeout(() => {
+        setError('Authentication timed out. The magic link may have expired. Please try signing in again.');
+      }, 15000);
+
       try {
         // Get the code from URL params (Supabase PKCE flow)
         const code = searchParams.get('code');
@@ -21,6 +31,7 @@ export default function AuthCallback() {
 
         // Check for error in URL
         if (errorParam) {
+          clearTimeout(timeoutId);
           setError(errorDescription || 'Authentication failed');
           return;
         }
@@ -31,17 +42,31 @@ export default function AuthCallback() {
           const { data: { session } } = await supabase.auth.getSession();
 
           if (!session) {
+            clearTimeout(timeoutId);
             setError('No authentication code found. Please try signing in again.');
             return;
           }
         } else {
           // Exchange code for session
           setStatus('Completing sign in...');
-          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
           if (exchangeError) {
+            clearTimeout(timeoutId);
             console.error('Auth exchange error:', exchangeError);
-            setError(exchangeError.message);
+            // Provide user-friendly error messages
+            if (exchangeError.message.includes('expired') || exchangeError.message.includes('invalid')) {
+              setError('This magic link has expired or already been used. Please request a new one.');
+            } else {
+              setError(exchangeError.message);
+            }
+            return;
+          }
+
+          // If exchange succeeded but no session, handle that case
+          if (!data.session) {
+            clearTimeout(timeoutId);
+            setError('Failed to create session. Please try signing in again.');
             return;
           }
         }
@@ -50,9 +75,12 @@ export default function AuthCallback() {
         const { data: { session } } = await supabase.auth.getSession();
 
         if (!session?.user) {
+          clearTimeout(timeoutId);
           setError('Failed to establish session. Please try again.');
           return;
         }
+
+        clearTimeout(timeoutId);
 
         // Check for pending profile data (from signup)
         const pendingProfileData = localStorage.getItem('pending_profile_data');
@@ -130,6 +158,7 @@ export default function AuthCallback() {
         navigate('/dashboard', { replace: true });
 
       } catch (e) {
+        clearTimeout(timeoutId);
         console.error('Auth callback error:', e);
         setError('An unexpected error occurred. Please try signing in again.');
       }
