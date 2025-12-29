@@ -1,5 +1,16 @@
 # E.Q.U.I.P. 360 Assessment Tool
 
+> **IMPORTANT FOR CLAUDE:** Before starting work, read `CONTEXT.md` in the project root. It contains:
+> - Development session history and decisions made
+> - Database schema and RLS policies (critical for Supabase)
+> - Authentication system details (OTP codes, not magic links)
+> - Issues that were fixed and how
+> - Pending issues and test accounts
+>
+> Always read CONTEXT.md after conversation auto-compaction or at the start of a new session.
+
+---
+
 ## Project Overview
 
 **E.Q.U.I.P. 360** (Emotional Quotient Under Intelligent Pressure) is a leadership assessment web application that measures emotional intelligence and leadership potential through scenario-based questions. It evaluates users across 13 metrics and assigns them a Leadership Identity based on their responses.
@@ -220,11 +231,13 @@ Edit `src/pages/StartPage.tsx` - form fields must match HubSpot form field names
 
 ## Important Notes
 
-1. **No backend** - This is a purely client-side React app with localStorage persistence
-2. **HubSpot is the only external service** - Form submissions go to HubSpot Forms API
-3. **All assessment logic is client-side** - Scoring and leadership determination happen in the browser
-4. **20 scenarios required** - Assessment expects exactly 20 scenarios with 4 choices each
-5. **Score range is 0-4 per metric per scenario** - Max possible score per metric is 80 (4 × 20)
+1. **Supabase backend** - Authentication, database, and RLS policies via Supabase
+2. **HubSpot integration** - Form submissions for lead capture
+3. **Resend for emails** - Invitation emails via `/api/send-invite.ts`
+4. **All assessment logic is client-side** - Scoring and leadership determination happen in the browser
+5. **20 scenarios required** - Assessment expects exactly 20 scenarios with 4 choices each
+6. **Score range is 0-4 per metric per scenario** - Max possible score per metric is 80 (4 × 20)
+7. **OTP authentication** - Uses 8-digit codes, NOT magic links (email scanners break magic links)
 
 ## Deployment
 
