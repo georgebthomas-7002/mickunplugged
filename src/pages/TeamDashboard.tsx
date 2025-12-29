@@ -432,17 +432,19 @@ export default function TeamDashboard() {
           >
             Team Members
           </button>
-          <button
-            className={`tab-btn ${activeTab === 'insights' ? 'active' : ''}`}
-            onClick={() => setActiveTab('insights')}
-            disabled={metrics.completedAssessments === 0}
-          >
-            Team Insights
-          </button>
+          {isOwner && (
+            <button
+              className={`tab-btn ${activeTab === 'insights' ? 'active' : ''}`}
+              onClick={() => setActiveTab('insights')}
+              disabled={metrics.completedAssessments === 0}
+            >
+              Team Insights
+            </button>
+          )}
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'members' ? (
+        {activeTab === 'members' || !isOwner ? (
           <div className="members-section">
             {/* Pending Invitations */}
             {pendingInvites.length > 0 && isOwner && (
