@@ -30,11 +30,32 @@ export default function AuthCallback() {
         const errorParam = searchParams.get('error');
         const errorDescription = searchParams.get('error_description');
 
-        // Check for error in URL
+        // Check for error in query params
         if (errorParam) {
           console.error('Auth error in URL:', errorParam, errorDescription);
           setError(errorDescription || 'Authentication failed');
           return;
+        }
+
+        // Also check for error in hash fragment (Supabase sometimes returns errors this way)
+        const hash = window.location.hash;
+        if (hash && hash.includes('error=')) {
+          console.error('Auth error in hash:', hash);
+          const hashParams = new URLSearchParams(hash.substring(1));
+          const hashError = hashParams.get('error');
+          const hashErrorDesc = hashParams.get('error_description');
+
+          if (hashError) {
+            let errorMessage = hashErrorDesc || hashError;
+            // Make error message user-friendly
+            if (errorMessage.includes('expired')) {
+              errorMessage = 'This magic link has expired. Please request a new one.';
+            } else if (errorMessage.includes('invalid')) {
+              errorMessage = 'This magic link is invalid or has already been used. Please request a new one.';
+            }
+            setError(errorMessage);
+            return;
+          }
         }
 
         if (!code) {
