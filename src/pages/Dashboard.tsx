@@ -29,7 +29,12 @@ export default function Dashboard() {
   }, [user]);
 
   const fetchOrganizations = async () => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    console.log('Fetching organizations for user:', user.id);
 
     try {
       // Fetch organizations owned by this user
@@ -39,46 +44,67 @@ export default function Dashboard() {
         .eq('owner_id', user.id)
         .order('created_at', { ascending: false });
 
+      console.log('Organizations query result:', orgs?.length || 0, 'orgs, error:', orgsError?.message);
+
       if (orgsError) {
         console.error('Error fetching organizations:', orgsError);
         setLoading(false);
         return;
       }
 
+      // If no orgs, just set empty array and stop loading
+      if (!orgs || orgs.length === 0) {
+        console.log('No organizations found');
+        setOrganizations([]);
+        setLoading(false);
+        return;
+      }
+
       // For each org, get member, assessment, and pending invite counts
       const orgsWithCounts = await Promise.all(
-        (orgs || []).map(async (org) => {
-          // Get member count
-          const { count: memberCount } = await supabase
-            .from('organization_members')
-            .select('*', { count: 'exact', head: true })
-            .eq('organization_id', org.id);
+        orgs.map(async (org) => {
+          try {
+            // Get member count
+            const { count: memberCount } = await supabase
+              .from('organization_members')
+              .select('*', { count: 'exact', head: true })
+              .eq('organization_id', org.id);
 
-          // Get completed assessment count
-          const { count: completedCount } = await supabase
-            .from('assessments')
-            .select('*', { count: 'exact', head: true })
-            .eq('organization_id', org.id);
+            // Get completed assessment count
+            const { count: completedCount } = await supabase
+              .from('assessments')
+              .select('*', { count: 'exact', head: true })
+              .eq('organization_id', org.id);
 
-          // Get pending invites count
-          const { count: pendingCount } = await supabase
-            .from('invitations')
-            .select('*', { count: 'exact', head: true })
-            .eq('organization_id', org.id)
-            .eq('status', 'pending');
+            // Get pending invites count
+            const { count: pendingCount } = await supabase
+              .from('invitations')
+              .select('*', { count: 'exact', head: true })
+              .eq('organization_id', org.id)
+              .eq('status', 'pending');
 
-          return {
-            ...org,
-            member_count: memberCount || 0,
-            completed_count: completedCount || 0,
-            pending_invites: pendingCount || 0,
-          };
+            return {
+              ...org,
+              member_count: memberCount || 0,
+              completed_count: completedCount || 0,
+              pending_invites: pendingCount || 0,
+            };
+          } catch (err) {
+            console.error('Error fetching counts for org:', org.id, err);
+            return {
+              ...org,
+              member_count: 0,
+              completed_count: 0,
+              pending_invites: 0,
+            };
+          }
         })
       );
 
+      console.log('Organizations with counts:', orgsWithCounts.length);
       setOrganizations(orgsWithCounts);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching organizations:', error);
     } finally {
       setLoading(false);
     }
