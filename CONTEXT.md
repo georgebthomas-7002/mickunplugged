@@ -4,7 +4,7 @@ This file preserves important context from development sessions. Claude should r
 
 ---
 
-## Last Updated: 2025-12-29
+## Last Updated: 2025-12-29 (Session End - 7% before auto-compact)
 
 ## Current Branch
 `claude/assessment-tool-boilerplate-01JSLyUStKoFewhvitwKyNDX`
@@ -142,6 +142,39 @@ CREATE POLICY "Users can read assessments" ON assessments FOR SELECT USING (true
 1. **Resend domain verification** - Client needs to verify equip360.io with Resend for production emails
 2. **Existing members** - Members added before `joined_at` fix may need manual database update
 3. **Existing assessments** - Assessments taken before org tracking fix have null organization_id
+4. **Test user hubspot@georgebthomas.com** - Was invited, accepted, took assessment - may need to verify data is now showing correctly after latest fixes
+
+## Session Summary (2025-12-29)
+
+### What We Did This Session:
+1. Cloned repo and set up project
+2. Fixed team creation modal getting stuck (missing setLoading)
+3. Switched from magic links to OTP codes for auth
+4. Fixed 8-digit OTP code (was limited to 6)
+5. Created all database tables and RLS policies
+6. Added delete team functionality with confirmation
+7. Added revoke invite functionality
+8. Added copy invite link to pending invites list
+9. Optimized dashboard loading (parallel queries)
+10. Fixed dashboard to show BOTH owned teams AND teams user is member of
+11. Added user email/name display in dashboard header
+12. Added account_type tracking (admin vs member) for future paid features
+13. Fixed organization_members insert (added joined_at)
+14. Fixed assessment save to include organization_id (with fallback to membership lookup)
+
+### SQL Commands User Needs to Run (if not already):
+```sql
+-- Account type column
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS account_type VARCHAR(20) DEFAULT 'member';
+UPDATE profiles SET account_type = 'admin' WHERE id IN (SELECT DISTINCT owner_id FROM organizations);
+
+-- All RLS policies (see full list in Database Schema section above)
+```
+
+### Testing Notes:
+- Test admin account exists in the system
+- Test member: hubspot@georgebthomas.com was invited and accepted
+- The member took an assessment - should now show in team insights after fixes deployed
 
 ---
 
