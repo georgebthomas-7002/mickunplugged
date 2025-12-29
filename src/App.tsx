@@ -8,6 +8,8 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import LoginPage from '@/pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import AuthCallback from '@/pages/AuthCallback';
+import Dashboard from '@/pages/Dashboard';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 function App() {
   return (
@@ -25,9 +27,11 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
 
-        {/* Protected routes will be added in Phase 2 */}
-        {/* <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> */}
+        {/* Protected routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        {/* TODO Phase 4: Team Dashboard */}
         {/* <Route path="/team/:orgId" element={<ProtectedRoute><TeamDashboard /></ProtectedRoute>} /> */}
+        {/* TODO Phase 3: Invitation acceptance */}
         {/* <Route path="/invite/:token" element={<InviteAccept />} /> */}
 
         {/* 404 */}
