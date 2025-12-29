@@ -596,10 +596,15 @@ function ResultsPage() {
               intelligence and make your next move.
             </p>
             <div className="actions-buttons">
-              <Link to="/" className="btn btn-primary">
+              {authUser && (
+                <Link to="/dashboard" className="btn btn-primary">
+                  Return to Dashboard
+                </Link>
+              )}
+              <Link to="/" className={authUser ? "btn btn-secondary" : "btn btn-primary"}>
                 Return Home
               </Link>
-              <button className="btn btn-secondary" onClick={() => window.print()}>
+              <button className="btn btn-outline" onClick={() => window.print()}>
                 Print Results
               </button>
             </div>

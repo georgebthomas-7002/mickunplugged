@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAssessment } from '@/context';
 import { useAuth } from '@/context/AuthContext';
 import { submitToHubSpot } from '@/services';
@@ -248,6 +248,12 @@ function StartPage() {
                 By starting, you agree to our privacy policy and terms of
                 service.
               </p>
+
+              {user && (
+                <Link to="/dashboard" className="back-to-dashboard">
+                  ← Back to Dashboard
+                </Link>
+              )}
             </form>
           </div>
         </div>

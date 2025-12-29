@@ -6,7 +6,8 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { CreateOrganizationModal } from '@/components/CreateOrganizationModal';
 import InviteMemberModal from '@/components/InviteMemberModal';
-import type { Organization } from '@/types/database';
+import { LEADERSHIP_FAMILIES, type LeadershipFamilyCode } from '@/types/equip360';
+import type { Organization, Assessment } from '@/types/database';
 import './Dashboard.css';
 
 interface OrganizationWithCounts extends Organization {
@@ -20,6 +21,7 @@ interface OrganizationWithCounts extends Organization {
 export default function Dashboard() {
   const { user, profile, signOut } = useAuth();
   const [organizations, setOrganizations] = useState<OrganizationWithCounts[]>([]);
+  const [userAssessment, setUserAssessment] = useState<Assessment | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [inviteOrg, setInviteOrg] = useState<Organization | null>(null);
@@ -146,6 +148,20 @@ export default function Dashboard() {
 
       console.log('Organizations with counts:', orgsWithCounts.length);
       setOrganizations(orgsWithCounts);
+
+      // Fetch user's most recent assessment
+      const { data: assessmentData } = await supabase
+        .from('assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('completed_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (assessmentData) {
+        setUserAssessment(assessmentData as Assessment);
+        console.log('User assessment found:', assessmentData.leadership_type);
+      }
     } catch (error) {
       console.error('Error fetching organizations:', error);
     } finally {
@@ -192,6 +208,55 @@ export default function Dashboard() {
             </button>
           </div>
         </header>
+
+        {/* Your Assessment Section */}
+        <div className="your-assessment-section">
+          <h2>Your Assessment</h2>
+          {userAssessment ? (
+            <div className="assessment-complete-card">
+              <div className="assessment-result">
+                <div
+                  className="leadership-badge-large"
+                  style={{
+                    borderColor: LEADERSHIP_FAMILIES[userAssessment.leadership_family as LeadershipFamilyCode]?.color || '#666'
+                  }}
+                >
+                  <span className="badge-label">Your Leadership Identity</span>
+                  <span
+                    className="badge-family"
+                    style={{
+                      color: LEADERSHIP_FAMILIES[userAssessment.leadership_family as LeadershipFamilyCode]?.color || '#666'
+                    }}
+                  >
+                    {LEADERSHIP_FAMILIES[userAssessment.leadership_family as LeadershipFamilyCode]?.name || userAssessment.leadership_family}
+                  </span>
+                  <span className="badge-type">{userAssessment.leadership_type?.replace(/_/g, ' ')}</span>
+                </div>
+                <div className="assessment-meta">
+                  <span className="completed-date">
+                    Completed {new Date(userAssessment.completed_at).toLocaleDateString()}
+                  </span>
+                  <Link to={`/results/${userAssessment.id}`} className="btn btn-primary">
+                    View Full Results
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="assessment-pending-card">
+              <div className="pending-content">
+                <span className="pending-icon">📝</span>
+                <div className="pending-text">
+                  <h3>Assessment Not Started</h3>
+                  <p>Discover your Leadership Identity and understand how you lead under pressure.</p>
+                </div>
+                <Link to="/start" className="btn btn-primary">
+                  Take Assessment
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Empty State */}
         {organizations.length === 0 ? (
@@ -310,10 +375,26 @@ export default function Dashboard() {
         <div className="dashboard-quick-links">
           <h3>Quick Actions</h3>
           <div className="quick-links-grid">
-            <Link to="/start" className="quick-link">
-              <span className="quick-link-icon">📝</span>
-              <span>Take Assessment</span>
-            </Link>
+            {userAssessment ? (
+              <Link to={`/results/${userAssessment.id}`} className="quick-link">
+                <span className="quick-link-icon">📊</span>
+                <span>View My Results</span>
+              </Link>
+            ) : (
+              <Link to="/start" className="quick-link">
+                <span className="quick-link-icon">📝</span>
+                <span>Take Assessment</span>
+              </Link>
+            )}
+            {profile?.account_type === 'admin' && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="quick-link"
+              >
+                <span className="quick-link-icon">➕</span>
+                <span>Create Team</span>
+              </button>
+            )}
             <Link to="/" className="quick-link">
               <span className="quick-link-icon">🏠</span>
               <span>Home</span>

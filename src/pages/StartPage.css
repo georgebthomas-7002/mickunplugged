@@ -300,3 +300,20 @@
     text-wrap: pretty;
   }
 }
+
+/* Back to Dashboard Link */
+.back-to-dashboard {
+  display: block;
+  text-align: center;
+  color: var(--color-gold);
+  font-size: 0.875rem;
+  text-decoration: none;
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  transition: color var(--transition-fast);
+}
+
+.back-to-dashboard:hover {
+  color: var(--color-white);
+  text-decoration: underline;
+}
