@@ -187,6 +187,20 @@
   font-size: 0.75rem;
 }
 
+.input-readonly {
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-300);
+  cursor: not-allowed;
+  border-color: var(--color-gray-700);
+}
+
+.field-note {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-gold);
+  margin-top: var(--spacing-xs);
+}
+
 .submit-btn {
   width: 100%;
   margin-top: var(--spacing-md);

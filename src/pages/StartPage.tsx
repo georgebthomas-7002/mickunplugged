@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAssessment } from '@/context';
+import { useAuth } from '@/context/AuthContext';
 import { submitToHubSpot } from '@/services';
 import {
   getOrganizationContext,
@@ -11,6 +12,7 @@ import './StartPage.css';
 function StartPage() {
   const navigate = useNavigate();
   const { registerUser, startAssessment } = useAssessment();
+  const { user, profile } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -23,6 +25,19 @@ function StartPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hubspotError, setHubspotError] = useState<string | null>(null);
   const [orgContext, setOrgContext] = useState<OrganizationContext | null>(null);
+
+  // Pre-fill form with logged-in user's data
+  useEffect(() => {
+    if (user && profile) {
+      setFormData({
+        email: user.email || '',
+        firstName: profile.first_name || '',
+        lastName: profile.last_name || '',
+        company: profile.company || '',
+        role: profile.role || '',
+      });
+    }
+  }, [user, profile]);
 
   // Check for organization context on mount
   useEffect(() => {
@@ -155,7 +170,12 @@ function StartPage() {
                   onChange={handleChange}
                   placeholder="you@example.com"
                   required
+                  readOnly={!!user}
+                  className={user ? 'input-readonly' : ''}
                 />
+                {user && (
+                  <span className="field-note">Logged in as this email</span>
+                )}
               </div>
 
               <div className="form-row">
