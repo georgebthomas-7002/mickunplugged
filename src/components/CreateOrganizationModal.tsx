@@ -23,12 +23,18 @@ export function CreateOrganizationModal({ onClose, onCreated }: Props) {
     setError('');
 
     try {
-      const { error: insertError } = await supabase
+      console.log('Creating organization:', name.trim(), 'for user:', user.id);
+
+      const { data, error: insertError } = await supabase
         .from('organizations')
         .insert({
           name: name.trim(),
           owner_id: user.id,
-        });
+        })
+        .select()
+        .single();
+
+      console.log('Create result:', data, 'error:', insertError?.message);
 
       if (insertError) {
         console.error('Error creating organization:', insertError);
@@ -37,6 +43,7 @@ export function CreateOrganizationModal({ onClose, onCreated }: Props) {
         return;
       }
 
+      console.log('Organization created successfully');
       setLoading(false);
       onCreated();
     } catch (err) {

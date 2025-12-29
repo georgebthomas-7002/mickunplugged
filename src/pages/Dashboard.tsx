@@ -37,22 +37,12 @@ export default function Dashboard() {
     console.log('Fetching organizations for user:', user.id);
 
     try {
-      // Add timeout to prevent infinite hanging
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Query timeout')), 10000);
-      });
-
       // Fetch organizations owned by this user
-      const queryPromise = supabase
+      const { data: orgs, error: orgsError } = await supabase
         .from('organizations')
         .select('*')
         .eq('owner_id', user.id)
         .order('created_at', { ascending: false });
-
-      const { data: orgs, error: orgsError } = await Promise.race([
-        queryPromise,
-        timeoutPromise.then(() => ({ data: null, error: { message: 'Query timed out - check RLS policies' } }))
-      ]) as Awaited<typeof queryPromise>;
 
       console.log('Organizations query result:', orgs?.length || 0, 'orgs, error:', orgsError?.message);
 
