@@ -720,8 +720,12 @@ export default function TeamDashboard() {
                       const typeData = LEADERSHIP_TYPES[typeCode as LeadershipTypeCode];
                       const familyCode = typeData?.family;
                       const familyData = familyCode ? LEADERSHIP_FAMILIES[familyCode] : null;
+                      // Find members with this leadership type
+                      const membersWithType = members.filter(
+                        (m) => m.assessment?.leadership_type === typeCode
+                      );
                       return (
-                        <div key={typeCode} className="type-item">
+                        <div key={typeCode} className="type-item has-tooltip">
                           <div
                             className="type-badge"
                             style={{ borderColor: familyData?.color || '#666' }}
@@ -735,6 +739,25 @@ export default function TeamDashboard() {
                             </span>
                           </div>
                           <span className="type-count">{count} member{count !== 1 ? 's' : ''}</span>
+                          {/* Hover tooltip with member names */}
+                          <div className="type-tooltip">
+                            <div className="tooltip-header">
+                              <span style={{ color: familyData?.color || '#666' }}>
+                                {typeData?.name || typeCode}
+                              </span>
+                            </div>
+                            <div className="tooltip-members">
+                              {membersWithType.map((member) => (
+                                <div key={member.id} className="tooltip-member">
+                                  <span className="tooltip-member-name">
+                                    {member.profile?.first_name && member.profile?.last_name
+                                      ? `${member.profile.first_name} ${member.profile.last_name}`
+                                      : member.profile?.email || 'Unknown'}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       );
                     })}
